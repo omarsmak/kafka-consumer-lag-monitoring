@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/kafka-consumer-lag-monitoring.iml" filepath="$PROJECT_DIR$/.idea/kafka-consumer-lag-monitoring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_main.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_main.iml" group="kafka-consumer-lag-monitoring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_test.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_test.iml" group="kafka-consumer-lag-monitoring" />
+    </modules>
+  </component>
+</project>
