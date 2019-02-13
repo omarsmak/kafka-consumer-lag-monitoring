@@ -6,7 +6,7 @@ import com.github.ajalt.mordant.TermColors
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.scheduleAtFixedRate
 
 /**

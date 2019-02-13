@@ -19,7 +19,7 @@ private val logger = KotlinLogging.logger {}
 class ClientCli : Callable<Void> {
 
     companion object {
-        const val DEFAULT_POLL_INTERVAL = 1000
+        const val DEFAULT_POLL_INTERVAL = 2000
         const val DEFAULT_HTTP_PORT = 9000
         const val DEFAULT_CLIENT_TYPE = "java"
         const val DEFAULT_LAG_THRESHOLD = 500
@@ -39,7 +39,7 @@ class ClientCli : Callable<Void> {
     @Option(names = ["-c", "--consumer.groups"], description = ["A list of Kafka consumer groups or list ending with regex, e.g: 'test_v*"], required = true)
     lateinit var kafkaConsumerClients: String
 
-    @Option(names = ["-i", "--poll.interval"], description = ["Interval delay in ms to that refreshes the client lag metrics, default to 1000ms"])
+    @Option(names = ["-i", "--poll.interval"], description = ["Interval delay in ms to that refreshes the client lag metrics, default to 2000ms"])
     var pollInterval: Int = DEFAULT_POLL_INTERVAL
 
     @Option(names = ["-p", "-http.port"], description = ["Http port that is used to expose metrics in case prometheus mode is selected, default to 9000"])
