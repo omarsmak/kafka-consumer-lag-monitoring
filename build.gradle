@@ -1,0 +1,109 @@
+buildscript {
+    ext {
+        kotlinVersion = '1.3.21'
+        kotlinLoggingVersion = '1.6.10'
+        kotlinLinterVersion = '1.4.0'
+        kafkaVersion = '2.0.0'
+        shadowJarVersion = '4.0.4'
+        junitVersion = '5.4.0'
+        prometheusVersion = '0.5.0'
+        jfrogBuildExtractorVersion = '4.5.4'
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jfrog.buildinfo:build-info-extractor-gradle:${jfrogBuildExtractorVersion}")
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "1.3.21"
+    id 'com.github.johnrengelman.shadow' version "4.0.4"
+    id 'com.adarshr.test-logger' version '1.3.1'
+    id "com.jfrog.artifactory" version '4.7.5'
+    id 'com.palantir.git-version' version '0.12.0-rc2'
+    id 'io.gitlab.arturbosch.detekt' version '1.0.0-RC13'
+    id 'maven-publish'
+}
+
+detekt {
+    toolVersion = "1.0.0-RC13"
+    input = files("src/main/kotlin")
+    filters = ".*/resources/.*,.*/build/.*"
+}
+
+
+
+group 'com.omarsmak.kafka.consumer.lag.monitoring'
+version gitVersion()
+
+apply plugin: 'idea'
+apply plugin: 'kotlin'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'application'
+
+
+mainClassName = 'com.omarsmak.kafka.consumer.lag.monitoring.MainKt'
+
+shadowJar {
+    zip64 = true
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+task sourceJar(type: Jar) {
+    classifier "sources"
+    from sourceSets.main.allSource
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    compile "org.apache.kafka:kafka_2.12:$kafkaVersion"
+    compile "org.apache.kafka:kafka-clients:$kafkaVersion"
+    compile "io.prometheus:simpleclient:$prometheusVersion"
+    compile "io.prometheus:simpleclient_hotspot:$prometheusVersion"
+    compile "io.prometheus:simpleclient_httpserver:$prometheusVersion"
+    compile "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
+
+
+    compile group: 'com.github.ajalt', name: 'mordant', version: '1.1.0'
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    zip64 = true
+}
+
+artifactoryPublish {
+    publications('mavenJava', 'shadow')
+    clientConfig.info.buildName = 'Kafka Consumer Monitoring'
+}
