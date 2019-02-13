@@ -1,4 +1,4 @@
-package com.omarsmak.kafka.consumer.lag.monitoring
+package com.omarsmak.kafka.consumer.lag.monitoring.cli
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import java.io.File

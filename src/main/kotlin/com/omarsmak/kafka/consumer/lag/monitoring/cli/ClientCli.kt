@@ -2,7 +2,6 @@
 
 package com.omarsmak.kafka.consumer.lag.monitoring.cli
 
-import com.omarsmak.kafka.consumer.lag.monitoring.Utils
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
 import com.omarsmak.kafka.consumer.lag.monitoring.output.Console
