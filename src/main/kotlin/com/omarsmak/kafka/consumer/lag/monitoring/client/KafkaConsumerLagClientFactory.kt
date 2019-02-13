@@ -12,6 +12,7 @@ import java.util.Properties
  * @since 2018-09-18
  */
 object KafkaConsumerLagClientFactory {
+    @JvmStatic
     fun getClient(client: String, prop: Properties): KafkaConsumerLagClient =
             when (client.trim().toLowerCase()) {
                 "scala" -> KafkaConsumerLagScalaClient.create(prop)
