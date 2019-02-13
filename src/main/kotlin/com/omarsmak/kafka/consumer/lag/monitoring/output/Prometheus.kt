@@ -17,7 +17,7 @@ private val logger = KotlinLogging.logger {}
  */
 class Prometheus(
     private val client: KafkaConsumerLagClient,
-    private val monitoringTimeout: Long
+    private val monitoringPollInterval: Int
 ) {
     companion object {
         val kafkaConsumerGroupOffsetGauge = Gauge.build()
@@ -61,10 +61,10 @@ class Prometheus(
         // Start HTTP our server
         startServer(port)
 
-        logger.info("Updating metrics every $monitoringTimeout...")
+        logger.info("Updating metrics every $monitoringPollInterval...")
 
         // Start publishing our metrics
-        Timer().scheduleAtFixedRate(0, monitoringTimeout) {
+        Timer().scheduleAtFixedRate(0, monitoringPollInterval.toLong()) {
             targetConsumerGroups.forEach { consumer ->
                 try {
                     val lag = client.getConsumerLag(consumer)

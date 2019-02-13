@@ -14,8 +14,8 @@ import kotlin.concurrent.scheduleAtFixedRate
  */
 class Console(
         private val client: KafkaConsumerLagClient,
-        private val monitoringTimeout: Long,
-        private val monitoringLagThreshold: Long
+        private val monitoringPollInterval: Int,
+        private val monitoringLagThreshold: Int
 ) {
 
     private val termColors = TermColors()
@@ -28,7 +28,7 @@ class Console(
      * `Total lag: @totalLag`
      */
     fun show(targetConsumerGroups: Set<String>) {
-        Timer().scheduleAtFixedRate(0, monitoringTimeout) {
+        Timer().scheduleAtFixedRate(0, monitoringPollInterval.toLong()) {
             print("\u001b[H\u001b[2J")
 
             targetConsumerGroups.forEach { consumer ->
@@ -48,7 +48,7 @@ class Console(
         }
     }
 
-    private fun printLagPerTopic(metrics: Lag, monitoringLagThreshold: Long, termColors: TermColors) {
+    private fun printLagPerTopic(metrics: Lag, monitoringLagThreshold: Int, termColors: TermColors) {
         println("Topic name: ${metrics.topicName}")
         println("Total topic offsets: ${metrics.latestTopicOffsets.values.sum()}")
         println("Total consumer offsets: ${metrics.latestConsumerOffsets.values.sum()}")
