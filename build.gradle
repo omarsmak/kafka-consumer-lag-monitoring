@@ -26,10 +26,10 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.3.21"
     id 'com.github.johnrengelman.shadow' version "4.0.4"
     id 'com.adarshr.test-logger' version '1.3.1'
-    id "com.jfrog.artifactory" version '4.7.5'
     id 'com.palantir.git-version' version '0.12.0-rc2'
     id 'io.gitlab.arturbosch.detekt' version '1.0.0-RC13'
     id 'maven-publish'
+    id "com.jfrog.bintray" version "1.8.4"
 }
 
 detekt {
@@ -103,9 +103,4 @@ test {
 
 shadowJar {
     zip64 = true
-}
-
-artifactoryPublish {
-    publications('mavenJava', 'shadow')
-    clientConfig.info.buildName = 'Kafka Consumer Monitoring'
 }
