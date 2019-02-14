@@ -7,7 +7,6 @@ import picocli.CommandLine
  * Main entry for the program
  *
  * @author oalsafi
- * @since 2018-07-16
  */
 
 fun main(arg: Array<String>) {

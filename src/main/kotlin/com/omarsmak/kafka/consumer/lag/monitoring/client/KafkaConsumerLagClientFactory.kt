@@ -3,13 +3,12 @@ package com.omarsmak.kafka.consumer.lag.monitoring.client
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
 import com.omarsmak.kafka.consumer.lag.monitoring.client.impl.KafkaConsumerLagJavaClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.impl.KafkaConsumerLagScalaClient
-import java.util.Properties
+import java.util.*
 
 /**
  * Main KafkaOffset factory, this should be the entry
  *
  * @author oalsafi
- * @since 2018-09-18
  */
 object KafkaConsumerLagClientFactory {
     @JvmStatic

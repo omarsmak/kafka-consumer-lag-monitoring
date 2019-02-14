@@ -4,7 +4,6 @@ package com.omarsmak.kafka.consumer.lag.monitoring.client.data
  * Entities representations
  *
  * @author oalsafi
- * @since 2018-07-21
  */
 
 data class Offsets(

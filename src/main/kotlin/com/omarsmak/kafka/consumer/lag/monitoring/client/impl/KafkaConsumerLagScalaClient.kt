@@ -5,21 +5,16 @@ import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
 import java.util.Properties
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.listOf
-import kotlin.collections.mutableListOf
 import kotlin.collections.set
-import kotlin.collections.toMutableList
 
 /**
  * An abstraction over Kafka Scala and Java admin clients
  *
  * @author oalsafi
- * @since 2018-07-16
  */
 
 @Deprecated("This class is deprecated in favor of the com.trivago.up.kafka.consumer.monitoring.client.impl.KafkaOffsetJavaClientImpl client since the Scala client is deprecated in Kafka library.")
-internal class KafkaConsumerLagScalaClient private constructor(config: Properties) : KafkaConsumerLagBaseClient(config) {
+internal class KafkaConsumerLagScalaClient private constructor(config: Properties) : AbstractKafkaConsumerLagClient(config) {
 
     // Create all the required clients from Kafka, in this implementation we will use Java and Scala clients
     private val scalaAdminClient = kafka.admin.AdminClient.create(config)

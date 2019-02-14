@@ -10,7 +10,7 @@ import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
-import java.util.Properties
+import java.util.*
 import java.util.concurrent.Callable
 
 private val logger = KotlinLogging.logger {}
@@ -30,7 +30,7 @@ class ClientCli : Callable<Void> {
         PROMETHEUS("prometheus")
     }
 
-    @Option(names = ["-m", "--mode"], description = ["Mode to run client, possible values 'console' or 'prometheus"])
+    @Option(names = ["-m", "--mode"], description = ["Mode to run client, possible values 'console' or 'prometheus, default to 'console'"])
     var clientMode: String = ClientModes.CONSOLE.mode
 
     @Option(names = ["-b", "--bootstrap.servers"], description = ["A list of host/port pairs to use for establishing the initial connection to the Kafka cluster"], required = true)
@@ -59,6 +59,11 @@ class ClientCli : Callable<Void> {
             ClientModes.CONSOLE.mode -> initializeConsoleMode(kafkaConsumerLagClient, targetConsumerGroups)
             ClientModes.PROMETHEUS.mode -> initializePrometheusMode(kafkaConsumerLagClient, targetConsumerGroups, httpPort)
             else -> logger.error("Output mode `$clientMode` is not valid")
+        }
+
+        // Add the shutdown hook
+        Runtime.getRuntime().apply {
+            addShutdownHook(Thread(kafkaConsumerLagClient::close))
         }
 
         return null

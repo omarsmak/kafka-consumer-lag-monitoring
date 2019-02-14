@@ -8,7 +8,6 @@ import org.apache.kafka.clients.admin.TopicDescription
  * Interface for KafkaOffsetClient public API
  *
  * @author oalsafi
- * @since 2018-07-16
  */
 
 interface KafkaConsumerLagClient : AutoCloseable {

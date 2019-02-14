@@ -4,18 +4,17 @@ package com.omarsmak.kafka.consumer.lag.monitoring.client.impl
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
-import java.util.Properties
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.common.TopicPartition
+import java.util.*
 
 /**
  * An abstraction over Kafka Java clients
  *
  * @author oalsafi
- * @since 2018-09-17
  */
 
-internal class KafkaConsumerLagJavaClient private constructor(props: Properties) : KafkaConsumerLagBaseClient(props) {
+internal class KafkaConsumerLagJavaClient private constructor(props: Properties) : AbstractKafkaConsumerLagClient(props) {
 
     companion object {
         fun create(props: Properties): KafkaConsumerLagJavaClient {

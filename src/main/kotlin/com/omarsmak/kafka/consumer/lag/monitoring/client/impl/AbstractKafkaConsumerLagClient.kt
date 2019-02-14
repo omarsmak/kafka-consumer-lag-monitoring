@@ -6,21 +6,20 @@ import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
-import java.util.Properties
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.TopicDescription
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.serialization.Serdes
+import java.util.*
 
 /**
  * Base client class
  *
  * @author oalsafi
- * @since 2018-09-18
  */
 
-internal abstract class KafkaConsumerLagBaseClient(props: Properties) : KafkaConsumerLagClient {
+internal abstract class AbstractKafkaConsumerLagClient(props: Properties) : KafkaConsumerLagClient {
 
     // Create all the required clients from Kafka
     protected val javaAdminClient = AdminClient.create(props)
@@ -58,7 +57,7 @@ internal abstract class KafkaConsumerLagBaseClient(props: Properties) : KafkaCon
 
     override fun close() {
         javaAdminClient.close()
-        kafkaConsumerClient.close()
+        kafkaConsumerClient.wakeup()
         closeClients()
     }
 
@@ -67,12 +66,9 @@ internal abstract class KafkaConsumerLagBaseClient(props: Properties) : KafkaCon
     private fun getConsumerLagPerTopic(consumerOffsets: Offsets): Lag {
         val topicOffsets = getTopicOffsets(consumerOffsets.topicName)
 
-        var totalLag = 0L
-        val lagPerPartition = consumerOffsets.offsetPerPartition.map { (k, v) ->
-            val lag = topicOffsets.offsetPerPartition[k]!! - v
-            totalLag += lag
-            k to lag
-        }.toMap()
+        val lagPerPartitionAndTotalLag = calculateLagPerPartitionAndTotalLag(topicOffsets, consumerOffsets)
+        val lagPerPartition = lagPerPartitionAndTotalLag.first
+        val totalLag = lagPerPartitionAndTotalLag.second
 
         return Lag(
                 topicOffsets.topicName,
@@ -81,5 +77,16 @@ internal abstract class KafkaConsumerLagBaseClient(props: Properties) : KafkaCon
                 topicOffsets.offsetPerPartition,
                 consumerOffsets.offsetPerPartition
         )
+    }
+
+    private fun calculateLagPerPartitionAndTotalLag(topicOffsets: Offsets, consumerOffsets: Offsets): Pair<Map<Int, Long>, Long>{
+        var totalLag = 0L
+        val lagPerPartition = consumerOffsets.offsetPerPartition.map { (k, v) ->
+            val lag = topicOffsets.offsetPerPartition[k]!! - v
+            totalLag += lag
+            k to lag
+        }.toMap()
+
+        return (lagPerPartition to totalLag)
     }
 }
