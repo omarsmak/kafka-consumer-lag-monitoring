@@ -2,9 +2,9 @@ language: java
 script: ./gradlew clean build -x test
 deploy:
   provider: releases
-  api_key: "${GITHUB_KEY}"
+  api_key: $GITHUB_KEY
   file_glob: true
-  file: "*/build/libs/kafka-consumer-lag-monitoring-*.jar"
+  file: "build/libs/kafka-consumer-lag-monitoring-*.jar"
   skip_cleanup: true
   on:
     tags: false
