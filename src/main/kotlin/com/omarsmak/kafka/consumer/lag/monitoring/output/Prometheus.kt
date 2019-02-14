@@ -6,9 +6,9 @@ import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
 import io.prometheus.client.Gauge
 import io.prometheus.client.exporter.HTTPServer
-import java.util.Timer
-import kotlin.concurrent.scheduleAtFixedRate
 import mu.KotlinLogging
+import java.util.*
+import kotlin.concurrent.scheduleAtFixedRate
 
 private val logger = KotlinLogging.logger {}
 
@@ -28,7 +28,7 @@ class Prometheus(
 
         val kafkaConsumerLagPerPartitionGauge = Gauge.build()
                 .name("kafka_consumer_group_partition_lag")
-                .help("The lag of a consumer group behind the head of a given partition of a topic. Calculated like this: current_topic_offset - current_consumer_offset")
+                .help("The lag of a consumer group behind the head of a given partition of a topic. Calculated like this: current_topic_offset_per_partition - current_consumer_offset_per_partition")
                 .labelNames("group", "topic", "partition")
                 .register()
 
@@ -56,6 +56,7 @@ class Prometheus(
      * `kafka_consumer_group_offset{group, topic, partition}`
      * `kafka_consumer_group_partition_lag{group, topic, partition}`
      * `kafka_consumer_group_total_lag{group, topic}`
+     * `kafka_topic_latest_offsets{group, topic, partition}
      */
     fun initialize(targetConsumerGroups: Set<String>, port: Int) {
         // Start HTTP our server

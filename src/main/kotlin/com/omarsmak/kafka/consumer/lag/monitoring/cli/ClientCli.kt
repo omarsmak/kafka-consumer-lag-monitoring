@@ -36,7 +36,7 @@ class ClientCli : Callable<Void> {
     @Option(names = ["-b", "--bootstrap.servers"], description = ["A list of host/port pairs to use for establishing the initial connection to the Kafka cluster"], required = true)
     lateinit var kafkaBootstrapServers: String
 
-    @Option(names = ["-c", "--consumer.groups"], description = ["A list of Kafka consumer groups or list ending with regex, e.g: 'test_v*"], required = true)
+    @Option(names = ["-c", "--consumer.groups"], description = ["A list of Kafka consumer groups or list ending with star (*) to fetch all consumers with matching pattern, e.g: 'test_v*'"], required = true)
     lateinit var kafkaConsumerClients: String
 
     @Option(names = ["-i", "--poll.interval"], description = ["Interval delay in ms to that refreshes the client lag metrics, default to 2000ms"])
