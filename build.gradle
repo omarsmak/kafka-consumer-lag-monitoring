@@ -94,6 +94,17 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourceJar
+    archives javadocJar
+}
+
 repositories {
     mavenCentral()
     jcenter()
@@ -127,11 +138,14 @@ shadowJar {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_API_KEY')
+    publications = ['mavenPublication']
+    
     pkg {
         repo = bintrayRepo
         name = bintrayName
         userOrg = developerId
         vcsUrl = gitUrl
+        licenses = ['MIT']
         version {
             name = libraryVersion
             desc = libraryDescription
@@ -165,9 +179,14 @@ def pomConfig = {
 // Create the publication with the pom configuration:
 publishing {
     publications {
-        MyPublication(MavenPublication) {
+        mavenPublication(MavenPublication) {
             from components.java
-            artifact sourceJar
+            artifact sourceJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
             groupId publishingGroupId
             artifactId publishingArtifactId
             version libraryVersion
