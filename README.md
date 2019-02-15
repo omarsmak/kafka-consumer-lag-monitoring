@@ -1,6 +1,8 @@
 Kafka Consumer Lag Monitoring
 ====
 [![Build Status](https://travis-ci.com/omarsmak/kafka-consumer-lag-monitoring.svg?token=ACVRSYGMw5EM3tmwPiBz&branch=master)](https://travis-ci.com/omarsmak/kafka-consumer-lag-monitoring)
+[ ![Download](https://api.bintray.com/packages/omarsmak/kafka/consumer-lag-monitoring/images/download.svg) ](https://bintray.com/omarsmak/kafka/consumer-lag-monitoring/_latestVersion)
+
 
 A client tool that exports the consumer lag of a Kafka consumer group to different output implementations such as Prometheus or your terminal. It utlizes Kafka's AdminClient and Kafka's Consumer's client in order to fetch such 
 metrics.
@@ -10,7 +12,7 @@ Consumer lag calculated as follows:
 
  
 ## Installation
-This client requires at least Java 8 in order to run, soon it will be available as a Docker image.
+You can downland the latest release from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases).This client requires at least Java 8 in order to run, soon it will be available as a Docker image.
 
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
@@ -86,3 +88,36 @@ The latest committed offset of a topic in a given partition.
 The total lag of a consumer group behind the head of a topic. This gives the total lags over each partition, it provides good visibility but not a precise measurement since is not partition aware.
 
 ## Usage as Library 
+If you want to use this client embedded into your application, you can achieve that by adding a [dependency](https://bintray.com/omarsmak/kafka/consumer-lag-monitoring) to this tool in your `pom.xml` or `gradle.build` as explained below:
+#### Maven
+In your pom file add `jcenter` artifactory under `<repositories>..</repositories>`:
+```
+<repositories>
+    <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+</repositories>
+```
+and under `<dependencies>..</dependencies>`:
+```
+<dependency>
+  <groupId>com.omarsmak.kafka</groupId>
+  <artifactId>consumer-lag-monitoring</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
+
+#### Gradle
+In your `build.gradle`, under repositories add the following:
+```
+repositories {
+    jcenter()
+}
+```
+and under `dependencies` the following: 
+```
+compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.1'
+
+```
+**Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.
