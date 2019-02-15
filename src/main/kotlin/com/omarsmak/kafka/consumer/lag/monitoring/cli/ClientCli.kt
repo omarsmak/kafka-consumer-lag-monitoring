@@ -23,6 +23,8 @@ class ClientCli : Callable<Void> {
         const val DEFAULT_HTTP_PORT = 9000
         const val DEFAULT_CLIENT_TYPE = "java"
         const val DEFAULT_LAG_THRESHOLD = 500
+
+        lateinit var kafkaConsumerLagClient: KafkaConsumerLagClient
     }
 
     private enum class ClientModes(val mode: String) {
@@ -50,7 +52,7 @@ class ClientCli : Callable<Void> {
         val configConsumerGroups = kafkaConsumerClients.split(",")
 
         // Create client
-        val kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient(DEFAULT_CLIENT_TYPE, buildClientProp())
+        kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient(DEFAULT_CLIENT_TYPE, buildClientProp())
 
         // Scrap the consumer groups
         val targetConsumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, configConsumerGroups)
