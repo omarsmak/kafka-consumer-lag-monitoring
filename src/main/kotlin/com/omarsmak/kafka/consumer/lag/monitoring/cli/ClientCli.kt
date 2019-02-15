@@ -10,7 +10,7 @@ import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
-import java.util.*
+import java.util.Properties
 import java.util.concurrent.Callable
 
 private val logger = KotlinLogging.logger {}
@@ -23,8 +23,10 @@ class ClientCli : Callable<Void> {
         const val DEFAULT_HTTP_PORT = 9000
         const val DEFAULT_CLIENT_TYPE = "java"
         const val DEFAULT_LAG_THRESHOLD = 500
+    }
 
-        lateinit var kafkaConsumerLagClient: KafkaConsumerLagClient
+    private val kafkaConsumerLagClient: KafkaConsumerLagClient by lazy {
+        KafkaConsumerLagClientFactory.getClient(DEFAULT_CLIENT_TYPE, buildClientProp())
     }
 
     private enum class ClientModes(val mode: String) {
@@ -50,9 +52,6 @@ class ClientCli : Callable<Void> {
     override fun call(): Void? {
         // Load config
         val configConsumerGroups = kafkaConsumerClients.split(",")
-
-        // Create client
-        kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient(DEFAULT_CLIENT_TYPE, buildClientProp())
 
         // Scrap the consumer groups
         val targetConsumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, configConsumerGroups)

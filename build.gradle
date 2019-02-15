@@ -49,6 +49,8 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'application'
 
 ext {
+    libraryName = "kafka-consumer-lag-monitoring"
+
     bintrayRepo = "kafka"
     bintrayName = "consumer-lag-monitoring"
 
@@ -190,12 +192,14 @@ publishing {
             groupId publishingGroupId
             artifactId publishingArtifactId
             version libraryVersion
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('description', libraryDescription)
-                root.appendNode('name', licenceName)
-                root.appendNode('url', sitUrl)
-                root.children().last() + pomConfig
+            pom{
+                withXml {
+                    def root = asNode()
+                    root.appendNode('description', libraryDescription)
+                    root.appendNode('name', libraryName)
+                    root.appendNode('url', sitUrl)
+                    root.children().last() + pomConfig
+                }
             }
         }
     }
