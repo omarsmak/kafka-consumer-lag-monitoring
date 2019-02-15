@@ -13,7 +13,7 @@ Consumer lag calculated as follows:
 This client requires at least Java 8 in order to run, soon it will be available as a Docker image.
 
 ## Usage
-    java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                               ✓  11097  15:25:30
+    java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
         Usage: <main class> [-hV] -b=<kafkaBootstrapServers> -c=<kafkaConsumerClients>
                             [-i=<pollInterval>] [-m=<clientMode>] [-p=<httpPort>]
           -b, --bootstrap.servers=<kafkaBootstrapServers>
