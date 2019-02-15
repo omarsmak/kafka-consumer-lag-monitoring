@@ -121,3 +121,57 @@ compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.1'
 
 ```
 **Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.
+
+### Usage
+#### Java
+```
+import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient;
+import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+
+import java.util.Properties;
+
+public class ConsumerLagClientTest {
+    
+    public static void main(String[] args){
+        // Create a Properties object to hold the Kafka bootstrap servers
+        final Properties properties = new Properties();
+        properties.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
+        
+        // Create the client, we will use the Java client 
+        final KafkaConsumerLagClient kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient("java", properties);
+        
+        // Print the lag of a Kafka consumer
+        System.out.println(kafkaConsumerLagClient.getConsumerLag("awesome-consumer"));
+    }
+}
+```
+
+#### Kotlin
+```
+import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
+import org.apache.kafka.clients.admin.AdminClientConfig
+import java.util.Properties
+
+object ConsumerLagClientTest {
+
+    @JvmStatic
+    fun main(arg: Array<String>) {
+        // Create a Properties object to hold the Kafka bootstrap servers
+        val properties = Properties().apply {
+            this[AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG] = "kafka1:9092"
+        }
+
+        // Create the client, we will use the Kafka AdminClient Java client
+        val kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient("java", properties)
+
+        // Print the lag of a Kafka consumer
+        println(kafkaConsumerLagClient.getConsumerLag("awesome-consumer"))
+    }
+}
+```
+
+**Note:** The client includes two types of Kafka AdminClient, one is the Scala AdminClient 
+which is **deprecated** since Kafka 0.11 and the newer Java AdminClient, therefore it is 
+**highly** recommended to use the Java client since the Scala client will be **phase out**
+from this client in the upcoming versions.

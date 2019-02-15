@@ -13,4 +13,4 @@ deploy:
     script: ./gradlew clean bintrayUpload -x test
     skip_cleanup: true
     on:
-      tags: false
+      tags: true
