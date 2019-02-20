@@ -13,7 +13,7 @@ Consumer lag calculated as follows:
  
 ## Installation and Usage
 #### Uber JAR
-You can downland the latest release of the Uber JAR from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases).This client requires at least Java 8 in order to run. You can run it like this for example: 
+You can downland the latest release of the Uber JAR from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases). This client requires at least Java 8 in order to run. You can run it like this for example: 
 ```
 java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "console" -i 5000
 ```
@@ -24,8 +24,7 @@ This client is available as well in [docker hub](https://cloud.docker.com/u/omar
  ```
  docker run -p 9000:9000 --rm omarsmak/kafka-consumer-lag-monitoring:latest -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000 -p 9000
  ```
- Please note the above command will run a docker container with exposed and mapped port of `9000`, in order to expose the HTTP server for prometheus metrics. 
- However, if you change the client's HTTP port through the client's startup arguments (`--http.port`) as described below, you will need to change the docker port mapping accordingly to reflect your settings. 
+ **Note:** By default, port `9000` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9000`. However you can still change the corresponding docker mapped port to anyone of your choice. 
 
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
