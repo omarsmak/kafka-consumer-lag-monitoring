@@ -24,7 +24,7 @@ This client is available as well in [docker hub](https://cloud.docker.com/u/omar
  ```
  docker run -p 9000:9000 --rm omarsmak/kafka-consumer-lag-monitoring:latest -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000 -p 9000
  ```
- **Note:** By default, port `9000` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9000`. However you can still change the corresponding docker mapped port to anyone of your choice. 
+ **Note:** By default, port `9000` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9000`. However you can still change the corresponding docker mapped port to anything of your choice. 
 
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
