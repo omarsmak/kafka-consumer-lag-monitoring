@@ -31,6 +31,7 @@ plugins {
     id 'maven-publish'
     id "com.jfrog.bintray" version "1.8.4"
     id 'java-library'
+    id 'com.google.cloud.tools.jib' version '1.0.0'
 }
 
 detekt {
@@ -202,5 +203,26 @@ publishing {
                 }
             }
         }
+    }
+}
+
+jib {
+    from.image 'gcr.io/distroless/java:11'
+    to{
+        image = "omarsmak" + "/" + libraryName
+        tags = [libraryVersion, "latest"]
+        auth {
+            username = System.getenv('DOCKERHUB_USER')
+            password = System.getenv('DOCKERHUB_PASSWORD')
+        }
+    }
+    container {
+        ports = ["9000"]
+        jvmFlags = [
+                "-XX:+UseCompressedOops",
+                "-XX:MaxRAMPercentage=80",
+                "-Dfile.encoding=UTF-8",
+                "-Djava.security.egd=file:/dev/./urandom"
+        ]
     }
 }
