@@ -18,8 +18,8 @@ Quoting this [article](https://sematext.com/blog/kafka-consumer-lag-offsets-moni
 > Why is Consumer Lag Important? Many applications today are based on being able to process (near) real-time data. Think about performance monitoring system like Sematext Monitoring or log management service like Sematext Logs. They continuously process infinite streams of near real-time data. If they were to show you metrics or logs with too much delay – if the Consumer Lag were too big – they’d be nearly useless.  This Consumer Lag tells us how far behind each Consumer (Group) is in each Partition.  **The smaller the lag the more real-time the data consumption**.
 
 In summary, consumer lag tells us 2 things:
-* The closer the lag to 0, the more confidnce we are on processing messages nearer to real-time. Therefore we can say, our consumers are processing messages in healthy manner.
-* The further the lag from 0, the less confidnce we are on processing messages nearer to real-time. Therefore, it may indicate that our consumers are not processing messages in healthy manner.
+* The closer the lag to 0, the more confidnce we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are processing messages in a healthy manner.
+* The further the lag from 0, the less confidnce we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are not processing messages in a healthy manner.
  
 ## Installation and Usage
 #### Uber JAR
