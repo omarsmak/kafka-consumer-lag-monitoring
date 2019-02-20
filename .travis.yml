@@ -19,4 +19,4 @@ deploy:
     script: ./gradlew jib
     skip_cleanup: true
     on:
-      tags: false
+      tags: true

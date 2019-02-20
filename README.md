@@ -11,8 +11,21 @@ Consumer lag calculated as follows:
     sum(topic_offset_per_partition-consumer_offset_per_partition)
 
  
-## Installation
-You can downland the latest release from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases).This client requires at least Java 8 in order to run, soon it will be available as a Docker image.
+## Installation and Usage
+#### Uber JAR
+You can downland the latest release of the Uber JAR from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases).This client requires at least Java 8 in order to run. You can run it like this for example: 
+```
+java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "console" -i 5000
+```
+
+#### Docker
+This client is available as well in [docker hub](https://cloud.docker.com/u/omarsmak/repository/docker/omarsmak/kafka-consumer-lag-monitoring), the docker image is built on top of Java 11 JRE image and optimized to run in container orchestration frameworks
+ such as kubernetes as efficient as possible. Assuming you want to run it locally and you have docker daemon installed, you can run it like this for example:
+ ```
+ docker run -p 9000:9000 --rm omarsmak/kafka-consumer-lag-monitoring:latest -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000 -p 9000
+ ```
+ Please note the above command will run a docker container with exposed and mapped port of `9000`, in order to expose the HTTP server for prometheus metrics. 
+ However, if you change the client's HTTP port through the client's startup arguments (`--http.port`) as described below, you will need to change the docker port mapping accordingly to reflect your settings. 
 
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
@@ -29,7 +42,7 @@ You can downland the latest release from [here](https://github.com/omarsmak/kafk
                                     Interval delay in ms to that refreshes the client lag
                                       metrics, default to 2000ms
           -m, --mode=<clientMode>   Mode to run client, possible values 'console' or
-                                      'prometheus, default to 'console'
+                                      'prometheus', default to 'console'
           -p, --http.port=<httpPort> Http port that is used to expose metrics in case
                                       prometheus mode is selected, default to 9000
           -V, --version             Print version information and exit.
