@@ -4,8 +4,8 @@ package com.omarsmak.kafka.consumer.lag.monitoring.cli
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
-import com.omarsmak.kafka.consumer.lag.monitoring.output.Console
-import com.omarsmak.kafka.consumer.lag.monitoring.output.Prometheus
+import com.omarsmak.kafka.consumer.lag.monitoring.outputs.Console
+import com.omarsmak.kafka.consumer.lag.monitoring.outputs.Prometheus
 import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
 import picocli.CommandLine.Command

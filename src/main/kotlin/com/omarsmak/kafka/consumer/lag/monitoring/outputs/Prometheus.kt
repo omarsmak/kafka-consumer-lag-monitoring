@@ -1,6 +1,6 @@
 @file:Suppress("MaximumLineLength", "MaxLineLength")
 
-package com.omarsmak.kafka.consumer.lag.monitoring.output
+package com.omarsmak.kafka.consumer.lag.monitoring.outputs
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException

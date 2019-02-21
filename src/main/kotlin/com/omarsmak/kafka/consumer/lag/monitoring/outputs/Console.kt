@@ -1,6 +1,6 @@
 @file:Suppress("ParameterListWrapping")
 
-package com.omarsmak.kafka.consumer.lag.monitoring.output
+package com.omarsmak.kafka.consumer.lag.monitoring.outputs
 
 import com.github.ajalt.mordant.TermColors
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
@@ -10,7 +10,7 @@ import java.util.Timer
 import kotlin.concurrent.scheduleAtFixedRate
 
 /**
- * This class prints the lag output to the console based on the configuration passed
+ * This class prints the lag outputs to the console based on the configuration passed
  */
 class Console(
         private val client: KafkaConsumerLagClient,
@@ -21,7 +21,7 @@ class Console(
     private val termColors = TermColors()
 
     /**
-     * Print [targetConsumerGroups] output to the console in this format:
+     * Print [targetConsumerGroups] outputs to the console in this format:
      * `Topic name: @topicName`
      * `Total topic offsets: @topicOffsets`
      * `Total consumer offsets: @totalConsumerOffsets`
