@@ -1,5 +1,5 @@
 language: java
-script: ./gradlew clean shadowJar
+script: ./gradlew clean test shadowJar
 deploy:
   - provider: releases
     api_key: $GITHUB_KEY
