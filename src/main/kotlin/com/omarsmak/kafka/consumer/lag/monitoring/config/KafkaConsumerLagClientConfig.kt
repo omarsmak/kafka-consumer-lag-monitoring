@@ -2,12 +2,15 @@
 
 package com.omarsmak.kafka.consumer.lag.monitoring.config
 
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.ConfigException
+import com.uchuhimo.konf.ConfigSpec
 import java.util.Properties
 
 open class KafkaConsumerLagClientConfig private constructor(
-    private val configs: Map<String, Any>
+    private val configs: Config
 ) {
-    companion object {
+    companion object : ConfigSpec(prefix = "") {
         const val HTTP_PORT = "http.port"
         private const val DEFAULT_HTTP_PORT = 9000
 
@@ -24,45 +27,48 @@ open class KafkaConsumerLagClientConfig private constructor(
         const val LAG_THRESHOLD = "lag.threshold"
         private const val DEFAULT_LAG_THRESHOLD = 500
 
+        // Add typesafe configuration definitions
+        private val httpPort by optional(name = HTTP_PORT, default = DEFAULT_HTTP_PORT)
+        private val bootstrapServers by required<String>(name = BOOTSTRAP_SERVERS)
+        private val pollInterval by optional(name = POLL_INTERVAL, default = DEFAULT_POLL_INTERVAL)
+        private val consumerGroups by required<Set<String>>(name = CONSUMER_GROUPS)
+        private val clientType by optional(name = CLIENT_TYPE, default = DEFAULT_CLIENT_TYPE)
+        private val lagTreshold by optional(name = LAG_THRESHOLD, default = DEFAULT_LAG_THRESHOLD)
+
         /**
          * Create a [KafkaConsumerLagClientConfig] instance using a Map of configurations
          */
+        @JvmStatic
         fun create(prop: Map<String, Any>) = createAndValidateConfigs(prop)
 
         /**
          * Create a [KafkaConsumerLagClientConfig] instance using a [Properties] instance
          */
+        @JvmStatic
         @Suppress("UNCHECKED_CAST")
         fun create(prop: Properties) = createAndValidateConfigs(prop.toMap() as Map<String, Any>)
 
         private fun createAndValidateConfigs(prop: Map<String, Any>): KafkaConsumerLagClientConfig {
-            // Check if we have our required BOOTSTRAP_SERVERS and CONSUMER_GROUPS
-            if (prop.containsKey(BOOTSTRAP_SERVERS) && prop.containsKey(CONSUMER_GROUPS)){
-                val configs = initializeDefaultConfig()
-                // Iterate over supplied map and overwrite whatever we have
-                prop.forEach { key, value ->
-                    configs[key] = value
-                }
-                return KafkaConsumerLagClientConfig(configs.toMap())
-            } else {
-                throw KafkaConsumerLagClientConfigException("The required configurations 'BOOTSTRAP_SERVERS' and 'CONSUMER_GROUPS' don't exist in the supplied configurations.")
+            try {
+                val config = Config {
+                    addSpec(this@Companion)
+                }.from.map.kv(prop)
+                return KafkaConsumerLagClientConfig(config)
+            } catch (ex: ConfigException){
+                throw KafkaConsumerLagClientConfigException(ex)
             }
         }
-
-        private fun initializeDefaultConfig() = mutableMapOf(
-                HTTP_PORT to DEFAULT_HTTP_PORT,
-                CLIENT_TYPE to DEFAULT_CLIENT_TYPE,
-                LAG_THRESHOLD to DEFAULT_LAG_THRESHOLD,
-                POLL_INTERVAL to DEFAULT_POLL_INTERVAL
-        )
     }
 
     /**
      * Get the value associated with a [key]
      */
-    fun get(key: String): Any? {
-        if (configs.containsKey(key)) return configs[key]
-        else throw KafkaConsumerLagClientConfigException("Key '$key' does not exist in the configurations")
+    operator fun get(key: String): Any? {
+        try {
+            return configs[key]
+        } catch (ex: ConfigException) {
+            throw KafkaConsumerLagClientConfigException(ex)
+        }
     }
 
     override fun toString(): String {
