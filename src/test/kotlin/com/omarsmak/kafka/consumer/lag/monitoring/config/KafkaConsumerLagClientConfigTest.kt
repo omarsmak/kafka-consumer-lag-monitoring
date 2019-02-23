@@ -3,6 +3,7 @@ package com.omarsmak.kafka.consumer.lag.monitoring.config
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.util.*
 import kotlin.test.assertNotEquals
 
 internal class KafkaConsumerLagClientConfigTest {
@@ -72,5 +73,16 @@ internal class KafkaConsumerLagClientConfigTest {
         assertThrows<KafkaConsumerLagClientConfigException> ("Should throw an exception for an invalid key"){
             config["dummy_config"]
         }
+    }
+
+    @Test
+    fun `test if we create by properties working`(){
+        val config = KafkaConsumerLagClientConfig.create(Properties().apply {
+            this[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS] = "kafka1:9092,kafka2:9092"
+            this[KafkaConsumerLagClientConfig.CONSUMER_GROUPS] = setOf("consumer_1", "consumer_2")
+        })
+
+        assertEquals("kafka1:9092,kafka2:9092", config[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
+        assertEquals(setOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
     }
 }

@@ -244,5 +244,7 @@ jacocoTestReport {
 }
 
 coveralls {
+    // Workaround for kotlin support
+    sourceDirs = files(sourceSets.main.kotlin.srcDirs).files.absolutePath
     jacocoReportPath "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 }
