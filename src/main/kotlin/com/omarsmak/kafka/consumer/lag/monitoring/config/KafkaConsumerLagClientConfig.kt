@@ -71,6 +71,18 @@ open class KafkaConsumerLagClientConfig private constructor(
         }
     }
 
+    /**
+     * Convert configs to [Map]
+     */
+    fun toMap() = configs.toMap()
+
+    /**
+     * Convert configs to [Properties]
+     */
+    fun toProperties() = Properties().apply {
+        putAll(configs.toMap())
+    }
+
     override fun toString(): String {
         return configs.toString()
     }

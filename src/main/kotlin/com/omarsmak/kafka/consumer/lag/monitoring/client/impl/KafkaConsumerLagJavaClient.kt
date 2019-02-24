@@ -4,9 +4,10 @@ package com.omarsmak.kafka.consumer.lag.monitoring.client.impl
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
+import org.apache.kafka.clients.admin.AdminClient
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.common.TopicPartition
-import java.util.*
 
 /**
  * An abstraction over Kafka Java clients
@@ -14,13 +15,10 @@ import java.util.*
  * @author oalsafi
  */
 
-internal class KafkaConsumerLagJavaClient private constructor(props: Properties) : AbstractKafkaConsumerLagClient(props) {
-
-    companion object {
-        fun create(props: Properties): KafkaConsumerLagJavaClient {
-            return KafkaConsumerLagJavaClient(props)
-        }
-    }
+internal class KafkaConsumerLagJavaClient (
+    javaAdminClient: AdminClient,
+    kafkaConsumerClient: KafkaConsumer<String, String>
+) : AbstractKafkaConsumerLagClient(javaAdminClient, kafkaConsumerClient) {
 
     override fun getConsumerGroupsList(): List<String> {
         val consumerList = javaAdminClient.listConsumerGroups().all().get().map { it.groupId() }

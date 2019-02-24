@@ -24,7 +24,7 @@ internal class KafkaConsumerLagJavaClientTest {
             this[AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
             //this[AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG] = "10000"
         }
-        kafkaOffsetClient = KafkaConsumerLagClientFactory.getClient("java", prop)
+        kafkaOffsetClient = KafkaConsumerLagClientFactory.create(prop)
     }
 
     @Test

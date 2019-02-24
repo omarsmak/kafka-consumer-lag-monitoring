@@ -26,7 +26,7 @@ class ClientCli : Callable<Void> {
     }
 
     private val kafkaConsumerLagClient: KafkaConsumerLagClient by lazy {
-        KafkaConsumerLagClientFactory.getClient(DEFAULT_CLIENT_TYPE, buildClientProp())
+        KafkaConsumerLagClientFactory.create(buildClientProp())
     }
 
     private enum class ClientModes(val mode: String) {

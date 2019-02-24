@@ -18,7 +18,7 @@ public class KafkaConsumerLagJavaClientTestJ {
         final Properties properties = new Properties();
         properties.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "test:9092");
 
-        kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient("java", properties);
+        kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create(properties);
     }
 
     @Test

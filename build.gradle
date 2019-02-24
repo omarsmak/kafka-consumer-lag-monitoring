@@ -12,6 +12,7 @@ buildscript {
         mordantVersion = '1.2.0'
         slf4jVersion = '1.7.25'
         konfVersion = '0.13.1'
+        mockkVersion = '1.9.1'
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
@@ -131,6 +132,7 @@ dependencies {
 
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testImplementation "io.mockk:mockk:${mockkVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
 }

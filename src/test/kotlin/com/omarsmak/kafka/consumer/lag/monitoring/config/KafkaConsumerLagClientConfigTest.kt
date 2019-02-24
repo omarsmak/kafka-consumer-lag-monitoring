@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 internal class KafkaConsumerLagClientConfigTest {
     @Test
@@ -84,5 +86,32 @@ internal class KafkaConsumerLagClientConfigTest {
 
         assertEquals("kafka1:9092,kafka2:9092", config[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
         assertEquals(setOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
+    }
+
+    @Test
+    fun `test if conversion to Map and Properties works as expected`() {
+        val config = KafkaConsumerLagClientConfig.create(Properties().apply {
+            this[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS] = "kafka1:9092,kafka2:9092"
+            this[KafkaConsumerLagClientConfig.CONSUMER_GROUPS] = setOf("consumer_1", "consumer_2")
+            this[KafkaConsumerLagClientConfig.POLL_INTERVAL] = 100
+        })
+
+        val configMap = config.toMap()
+
+        assertNotNull(configMap)
+        assertTrue {
+            !configMap.isEmpty()
+        }
+        assertEquals(100, configMap[KafkaConsumerLagClientConfig.POLL_INTERVAL])
+        assertEquals("kafka1:9092,kafka2:9092", configMap[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
+
+        val configProp = config.toProperties()
+
+        assertNotNull(configProp)
+        assertTrue {
+            !configProp.isEmpty
+        }
+        assertEquals(100, configProp[KafkaConsumerLagClientConfig.POLL_INTERVAL])
+        assertEquals("kafka1:9092,kafka2:9092", configProp[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
     }
 }

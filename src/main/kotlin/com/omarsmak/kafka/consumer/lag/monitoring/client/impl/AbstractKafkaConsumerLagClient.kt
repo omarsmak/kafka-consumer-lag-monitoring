@@ -19,12 +19,12 @@ import java.util.*
  * @author oalsafi
  */
 
-internal abstract class AbstractKafkaConsumerLagClient(props: Properties) : KafkaConsumerLagClient {
+internal abstract class AbstractKafkaConsumerLagClient(
+    protected val javaAdminClient: AdminClient,
+    private val kafkaConsumerClient: KafkaConsumer<String, String>
+) : KafkaConsumerLagClient {
 
-    // Create all the required clients from Kafka
-    protected val javaAdminClient = AdminClient.create(props)
-    private val kafkaConsumerClient =
-            KafkaConsumer(props, Serdes.String().deserializer(), Serdes.String().deserializer())
+    protected abstract fun closeClients()
 
     override fun getTopicsList(): List<String> {
         return javaAdminClient.listTopics().names().get().toList()
@@ -60,8 +60,6 @@ internal abstract class AbstractKafkaConsumerLagClient(props: Properties) : Kafk
         kafkaConsumerClient.wakeup()
         closeClients()
     }
-
-    protected abstract fun closeClients()
 
     private fun getConsumerLagPerTopic(consumerOffsets: Offsets): Lag {
         val topicOffsets = getTopicOffsets(consumerOffsets.topicName)
