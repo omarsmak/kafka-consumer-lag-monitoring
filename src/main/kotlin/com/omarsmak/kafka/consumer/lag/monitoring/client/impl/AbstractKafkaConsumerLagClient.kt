@@ -6,12 +6,8 @@ import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
-import org.apache.kafka.clients.admin.AdminClient
-import org.apache.kafka.clients.admin.TopicDescription
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.serialization.Serdes
-import java.util.*
 
 /**
  * Base client class
@@ -20,19 +16,10 @@ import java.util.*
  */
 
 internal abstract class AbstractKafkaConsumerLagClient(
-    protected val javaAdminClient: AdminClient,
     private val kafkaConsumerClient: KafkaConsumer<String, String>
 ) : KafkaConsumerLagClient {
 
     protected abstract fun closeClients()
-
-    override fun getTopicsList(): List<String> {
-        return javaAdminClient.listTopics().names().get().toList()
-    }
-
-    override fun getTopicsInfo(topicsCollection: Collection<String>): Map<String, TopicDescription> {
-        return javaAdminClient.describeTopics(topicsCollection).all().get()
-    }
 
     override fun getTopicOffsets(topicName: String): Offsets {
         val partitions = kafkaConsumerClient.partitionsFor(topicName).orEmpty()
@@ -56,7 +43,6 @@ internal abstract class AbstractKafkaConsumerLagClient(
     }
 
     override fun close() {
-        javaAdminClient.close()
         kafkaConsumerClient.wakeup()
         closeClients()
     }
@@ -80,7 +66,7 @@ internal abstract class AbstractKafkaConsumerLagClient(
     private fun calculateLagPerPartitionAndTotalLag(topicOffsets: Offsets, consumerOffsets: Offsets): Pair<Map<Int, Long>, Long>{
         var totalLag = 0L
         val lagPerPartition = consumerOffsets.offsetPerPartition.map { (k, v) ->
-            val lag = topicOffsets.offsetPerPartition[k]!! - v
+            val lag = topicOffsets.offsetPerPartition.getValue(k) - v
             totalLag += lag
             k to lag
         }.toMap()

@@ -119,7 +119,6 @@ repositories {
 
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    compile "org.apache.kafka:kafka_2.12:$kafkaVersion"
     compile "org.apache.kafka:kafka-clients:$kafkaVersion"
     compile "io.prometheus:simpleclient:$prometheusVersion"
     compile "io.prometheus:simpleclient_hotspot:$prometheusVersion"

@@ -5,6 +5,7 @@ package com.omarsmak.kafka.consumer.lag.monitoring.client.impl
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
 import org.apache.kafka.clients.admin.AdminClient
+import org.apache.kafka.clients.admin.TopicDescription
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.common.TopicPartition
@@ -16,9 +17,17 @@ import org.apache.kafka.common.TopicPartition
  */
 
 internal class KafkaConsumerLagJavaClient (
-    javaAdminClient: AdminClient,
+    private val javaAdminClient: AdminClient,
     kafkaConsumerClient: KafkaConsumer<String, String>
-) : AbstractKafkaConsumerLagClient(javaAdminClient, kafkaConsumerClient) {
+) : AbstractKafkaConsumerLagClient(kafkaConsumerClient) {
+
+    override fun getTopicsList(): List<String> {
+        return javaAdminClient.listTopics().names().get().toList()
+    }
+
+    override fun getTopicsInfo(topicsCollection: Collection<String>): Map<String, TopicDescription> {
+        return javaAdminClient.describeTopics(topicsCollection).all().get()
+    }
 
     override fun getConsumerGroupsList(): List<String> {
         val consumerList = javaAdminClient.listConsumerGroups().all().get().map { it.groupId() }
@@ -52,6 +61,6 @@ internal class KafkaConsumerLagJavaClient (
     }
 
     override fun closeClients() {
-        // We don't have any specific clients to close here
+        javaAdminClient.close()
     }
 }
