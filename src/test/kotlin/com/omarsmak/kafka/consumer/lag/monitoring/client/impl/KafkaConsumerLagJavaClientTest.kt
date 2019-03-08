@@ -51,6 +51,8 @@ internal class KafkaConsumerLagJavaClientTest {
     }
 
     private fun mockClasses(){
+        every { adminClient.listConsumerGroups().all().get() } returns mockGroupListings(10)
+
         every { adminClient.listConsumerGroupOffsets(TEST_CONSUMER_NAME)
                 .partitionsToOffsetAndMetadata()
                 .get() } returns mapOf(mockTopicPartition(0, TEST_TOPIC_NAME).first() to OffsetAndMetadata(1L))
@@ -62,6 +64,14 @@ internal class KafkaConsumerLagJavaClientTest {
         every { kafkaConsumerClient.partitionsFor(TEST_TOPIC_NAME) } returns mockListPartitionInfo(9, TEST_TOPIC_NAME)
         every { kafkaConsumerClient.partitionsFor(INVALID_TOPIC_NAME) } returns null
         every { kafkaConsumerClient.endOffsets(mockTopicPartition(9, TEST_TOPIC_NAME))} returns mockTopicPartitionToEndOffset(9, TEST_TOPIC_NAME)
+    }
+
+    private fun mockGroupListings(numOfGroups: Int): List<ConsumerGroupListing> {
+        val resultList = mutableListOf<ConsumerGroupListing>()
+        for (i in 0 .. numOfGroups){
+            resultList.add(ConsumerGroupListing("group-$i", true))
+        }
+        return resultList
     }
 
     private fun mockTopicPartition(numPartition: Int, topicName: String): List<TopicPartition> {
@@ -93,6 +103,12 @@ internal class KafkaConsumerLagJavaClientTest {
         return topicPartition.map {
             it to Random.nextLong()
         }.toMap()
+    }
+
+    @Test
+    fun `it should return all consumer groups`(){
+        val consumerGroups = kafkaOffsetClient.getConsumerGroupsList()
+        assertTrue(consumerGroups.isNotEmpty())
     }
 
     @Test
