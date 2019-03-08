@@ -21,14 +21,6 @@ internal class KafkaConsumerLagJavaClient (
     kafkaConsumerClient: KafkaConsumer<String, String>
 ) : AbstractKafkaConsumerLagClient(kafkaConsumerClient) {
 
-    override fun getTopicsList(): List<String> {
-        return javaAdminClient.listTopics().names().get().toList()
-    }
-
-    override fun getTopicsInfo(topicsCollection: Collection<String>): Map<String, TopicDescription> {
-        return javaAdminClient.describeTopics(topicsCollection).all().get()
-    }
-
     override fun getConsumerGroupsList(): List<String> {
         val consumerList = javaAdminClient.listConsumerGroups().all().get().map { it.groupId() }
         if (consumerList.isEmpty()) throw KafkaConsumerLagClientException("No consumers existing in the Kafka cluster.")
@@ -39,7 +31,7 @@ internal class KafkaConsumerLagJavaClient (
         val offsets = javaAdminClient.listConsumerGroupOffsets(consumerGroup)
                 .partitionsToOffsetAndMetadata()
                 .get()
-        if (offsets.isEmpty() || offsets == null)
+        if (offsets == null || offsets.isEmpty())
             throw KafkaConsumerLagClientException("Consumer group `$consumerGroup` does not exist in the Kafka cluster.")
 
         return getConsumerOffsetsPerTopic(offsets)
