@@ -11,17 +11,6 @@ import org.apache.kafka.clients.admin.TopicDescription
  */
 
 interface KafkaConsumerLagClient : AutoCloseable {
-
-    /**
-     * Return topic list
-     */
-    fun getTopicsList(): List<String>
-
-    /**
-     * Return clusters list
-     */
-    fun getTopicsInfo(topicsCollection: Collection<String>): Map<String, TopicDescription>
-
     /**
      * Return consumers groups list
      */

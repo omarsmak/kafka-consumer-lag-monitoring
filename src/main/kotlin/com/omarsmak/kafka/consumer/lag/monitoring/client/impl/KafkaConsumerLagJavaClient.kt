@@ -4,9 +4,11 @@ package com.omarsmak.kafka.consumer.lag.monitoring.client.impl
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Offsets
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
+import org.apache.kafka.clients.admin.AdminClient
+import org.apache.kafka.clients.admin.TopicDescription
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.common.TopicPartition
-import java.util.*
 
 /**
  * An abstraction over Kafka Java clients
@@ -14,13 +16,10 @@ import java.util.*
  * @author oalsafi
  */
 
-internal class KafkaConsumerLagJavaClient private constructor(props: Properties) : AbstractKafkaConsumerLagClient(props) {
-
-    companion object {
-        fun create(props: Properties): KafkaConsumerLagJavaClient {
-            return KafkaConsumerLagJavaClient(props)
-        }
-    }
+internal class KafkaConsumerLagJavaClient (
+    private val javaAdminClient: AdminClient,
+    kafkaConsumerClient: KafkaConsumer<String, String>
+) : AbstractKafkaConsumerLagClient(kafkaConsumerClient) {
 
     override fun getConsumerGroupsList(): List<String> {
         val consumerList = javaAdminClient.listConsumerGroups().all().get().map { it.groupId() }
@@ -32,7 +31,7 @@ internal class KafkaConsumerLagJavaClient private constructor(props: Properties)
         val offsets = javaAdminClient.listConsumerGroupOffsets(consumerGroup)
                 .partitionsToOffsetAndMetadata()
                 .get()
-        if (offsets.isEmpty() || offsets == null)
+        if (offsets == null || offsets.isEmpty())
             throw KafkaConsumerLagClientException("Consumer group `$consumerGroup` does not exist in the Kafka cluster.")
 
         return getConsumerOffsetsPerTopic(offsets)
@@ -54,6 +53,6 @@ internal class KafkaConsumerLagJavaClient private constructor(props: Properties)
     }
 
     override fun closeClients() {
-        // We don't have any specific clients to close here
+        javaAdminClient.close()
     }
 }

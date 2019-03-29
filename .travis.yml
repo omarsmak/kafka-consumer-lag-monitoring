@@ -1,5 +1,5 @@
 language: java
-script: ./gradlew clean shadowJar -x test
+script: ./gradlew clean test shadowJar
 deploy:
   - provider: releases
     api_key: $GITHUB_KEY
@@ -20,3 +20,5 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+after_success:
+- ./gradlew jacocoTestReport coveralls

@@ -1,44 +1,43 @@
 @file:Suppress("MaximumLineLength", "MaxLineLength")
 
-package com.omarsmak.kafka.consumer.lag.monitoring.output
+package com.omarsmak.kafka.consumer.lag.monitoring.response
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
+import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
 import io.prometheus.client.Gauge
 import io.prometheus.client.exporter.HTTPServer
 import mu.KotlinLogging
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
-private val logger = KotlinLogging.logger {}
-
 /**
  * This class publishes the lag out as prometheus metrics
  */
-class Prometheus(
-    private val client: KafkaConsumerLagClient,
-    private val monitoringPollInterval: Int
-) {
+class PrometheusResponseView : ResponseView {
+
     companion object {
-        val kafkaConsumerGroupOffsetGauge = Gauge.build()
+        private val logger = KotlinLogging.logger {}
+
+        private val kafkaConsumerGroupOffsetGauge = Gauge.build()
                 .name("kafka_consumer_group_offset")
                 .help("The latest committed offset of a consumer group in a given partition of a topic")
                 .labelNames("group", "topic", "partition")
                 .register()
 
-        val kafkaConsumerLagPerPartitionGauge = Gauge.build()
+        private val kafkaConsumerLagPerPartitionGauge = Gauge.build()
                 .name("kafka_consumer_group_partition_lag")
                 .help("The lag of a consumer group behind the head of a given partition of a topic. Calculated like this: current_topic_offset_per_partition - current_consumer_offset_per_partition")
                 .labelNames("group", "topic", "partition")
                 .register()
 
-        val kafkaTopicLatestOffsetsGauge = Gauge.build()
+        private val kafkaTopicLatestOffsetsGauge = Gauge.build()
                 .name("kafka_topic_latest_offsets")
                 .help("The latest committed offset of a topic in a given partition")
                 .labelNames("group", "topic", "partition")
                 .register()
 
-        val kafkaConsumerTotalLagGauge = Gauge.build()
+        private val kafkaConsumerTotalLagGauge = Gauge.build()
                 .name("kafka_consumer_group_total_lag")
                 .help("The total lag of a consumer group behind the head of a topic. This gives the total lags over each partition, it provides good visibility but not a precise measurement since is not partition aware")
                 .labelNames("group", "topic")
@@ -51,21 +50,39 @@ class Prometheus(
         }
     }
 
+    private lateinit var kafkaConsumerLagClient: KafkaConsumerLagClient
+    private lateinit var kafkaConsumerLagClientConfig: KafkaConsumerLagClientConfig
+
+    override fun configure(kafkaConsumerLagClient: KafkaConsumerLagClient, config: KafkaConsumerLagClientConfig) {
+        this.kafkaConsumerLagClient = kafkaConsumerLagClient
+        this.kafkaConsumerLagClientConfig = config
+    }
+
+    override fun execute() {
+        val targetConsumerGroups: Set<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
+        val monitoringPollInterval: Long = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.POLL_INTERVAL]
+        val httpPort: Int = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.HTTP_PORT]
+
+        initialize(kafkaConsumerLagClient, targetConsumerGroups, httpPort, monitoringPollInterval)
+    }
+
+    override fun identifier(): String = "prometheus"
+
     /**
-     * Start a HTTP server and expose the following Prometheus metrics:
+     * Start a HTTP server and expose the following PrometheusResponseView metrics:
      * `kafka_consumer_group_offset{group, topic, partition}`
      * `kafka_consumer_group_partition_lag{group, topic, partition}`
      * `kafka_consumer_group_total_lag{group, topic}`
      * `kafka_topic_latest_offsets{group, topic, partition}
      */
-    fun initialize(targetConsumerGroups: Set<String>, port: Int) {
+    private fun initialize(client: KafkaConsumerLagClient, targetConsumerGroups: Set<String>, port: Int, monitoringPollInterval: Long) {
         // Start HTTP our server
         startServer(port)
 
         logger.info("Updating metrics every $monitoringPollInterval...")
 
         // Start publishing our metrics
-        Timer().scheduleAtFixedRate(0, monitoringPollInterval.toLong()) {
+        Timer().scheduleAtFixedRate(0, monitoringPollInterval) {
             targetConsumerGroups.forEach { consumer ->
                 try {
                     val lag = client.getConsumerLag(consumer)
