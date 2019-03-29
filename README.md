@@ -192,8 +192,3 @@ object ConsumerLagClientTest {
     }
 }
 ```
-
-**Note:** The client includes two types of Kafka AdminClient, one is the Scala AdminClient 
-which is **deprecated** since Kafka 0.11 and the newer Java AdminClient, therefore it is 
-**highly** recommended to use the Java client since the Scala client will be **phased out**
-from this client in the upcoming versions.
