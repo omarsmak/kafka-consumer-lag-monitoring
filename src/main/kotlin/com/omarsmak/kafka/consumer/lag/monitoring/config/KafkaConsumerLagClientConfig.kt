@@ -12,17 +12,17 @@ open class KafkaConsumerLagClientConfig private constructor(
 ) {
     companion object : ConfigSpec(prefix = "") {
         const val HTTP_PORT = "http.port"
-        private const val DEFAULT_HTTP_PORT = 9000
+        const val DEFAULT_HTTP_PORT = 9000
 
         const val BOOTSTRAP_SERVERS = "bootstrap.servers"
 
         const val POLL_INTERVAL = "poll.interval"
-        private const val DEFAULT_POLL_INTERVAL = 200
+        const val DEFAULT_POLL_INTERVAL = 2000
 
         const val CONSUMER_GROUPS = "consumer.groups"
 
         const val LAG_THRESHOLD = "lag.threshold"
-        private const val DEFAULT_LAG_THRESHOLD = 500
+        const val DEFAULT_LAG_THRESHOLD = 500
 
         // Add typesafe configuration definitions
         private val httpPort by optional(name = HTTP_PORT, default = DEFAULT_HTTP_PORT)

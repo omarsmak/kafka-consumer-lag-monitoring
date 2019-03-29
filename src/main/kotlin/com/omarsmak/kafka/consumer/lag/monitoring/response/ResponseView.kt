@@ -10,7 +10,6 @@ import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientC
  */
 
 interface ResponseView {
-
     /**
      * Configure a response view task with instance of [KafkaConsumerLagClientConfig],
      * this will be called upon initializing the client

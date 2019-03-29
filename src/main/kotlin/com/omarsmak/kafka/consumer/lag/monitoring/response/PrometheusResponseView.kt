@@ -17,27 +17,27 @@ import kotlin.concurrent.scheduleAtFixedRate
 class PrometheusResponseView : ResponseView {
 
     companion object {
-        val logger = KotlinLogging.logger {}
+        private val logger = KotlinLogging.logger {}
 
-        val kafkaConsumerGroupOffsetGauge = Gauge.build()
+        private val kafkaConsumerGroupOffsetGauge = Gauge.build()
                 .name("kafka_consumer_group_offset")
                 .help("The latest committed offset of a consumer group in a given partition of a topic")
                 .labelNames("group", "topic", "partition")
                 .register()
 
-        val kafkaConsumerLagPerPartitionGauge = Gauge.build()
+        private val kafkaConsumerLagPerPartitionGauge = Gauge.build()
                 .name("kafka_consumer_group_partition_lag")
                 .help("The lag of a consumer group behind the head of a given partition of a topic. Calculated like this: current_topic_offset_per_partition - current_consumer_offset_per_partition")
                 .labelNames("group", "topic", "partition")
                 .register()
 
-        val kafkaTopicLatestOffsetsGauge = Gauge.build()
+        private val kafkaTopicLatestOffsetsGauge = Gauge.build()
                 .name("kafka_topic_latest_offsets")
                 .help("The latest committed offset of a topic in a given partition")
                 .labelNames("group", "topic", "partition")
                 .register()
 
-        val kafkaConsumerTotalLagGauge = Gauge.build()
+        private val kafkaConsumerTotalLagGauge = Gauge.build()
                 .name("kafka_consumer_group_total_lag")
                 .help("The total lag of a consumer group behind the head of a topic. This gives the total lags over each partition, it provides good visibility but not a precise measurement since is not partition aware")
                 .labelNames("group", "topic")

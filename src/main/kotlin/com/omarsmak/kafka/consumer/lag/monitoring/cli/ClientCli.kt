@@ -5,23 +5,21 @@ package com.omarsmak.kafka.consumer.lag.monitoring.cli
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
 import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
-import com.omarsmak.kafka.consumer.lag.monitoring.response.ResponseView
 import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
-import org.reflections.Reflections
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import java.util.*
 import java.util.concurrent.Callable
 
-private val logger = KotlinLogging.logger {}
-
 @Command(mixinStandardHelpOptions = true)
 class ClientCli : Callable<Void> {
 
     companion object {
-        const val DEFAULT_POLL_INTERVAL = 2000
-        const val DEFAULT_HTTP_PORT = 9000
+        private val logger = KotlinLogging.logger {}
+
+        const val DEFAULT_POLL_INTERVAL = KafkaConsumerLagClientConfig.DEFAULT_POLL_INTERVAL
+        const val DEFAULT_HTTP_PORT = KafkaConsumerLagClientConfig.DEFAULT_HTTP_PORT
     }
 
     private val kafkaConsumerLagClient: KafkaConsumerLagClient by lazy {
@@ -56,7 +54,7 @@ class ClientCli : Callable<Void> {
         val config = initializeConfigurations(targetConsumerGroups)
 
         // Initialize response view plugins
-        val responseViewPlugins = loadResponseViewPlugins(kafkaConsumerLagClient, config)
+        val responseViewPlugins = Utils.loadResponseViewPlugins(kafkaConsumerLagClient, config)
 
         // Find our desired response view
         val responseView = responseViewPlugins.find { it.identifier() == clientMode }
@@ -87,20 +85,6 @@ class ClientCli : Callable<Void> {
             KafkaConsumerLagClientConfig.POLL_INTERVAL to pollInterval,
             KafkaConsumerLagClientConfig.CONSUMER_GROUPS to targetConsumerGroups
     ))
-
-    private fun loadResponseViewPlugins(kafkaConsumerLagClient: KafkaConsumerLagClient, kafkaConsumerLagClientConfig: KafkaConsumerLagClientConfig): Set<ResponseView> {
-        // The reason for me to use reflection here is that I am planning to add dynamic loading for plugins, meaning that we can
-        // add the ability to add plugin through CLASSPATH or perhaps by creating a dedicated plugin folder
-        val reflections = Reflections(ResponseView::class.java.`package`.name)
-        val clazzes = reflections.getSubTypesOf(ResponseView::class.java)
-
-        logger.info("loaded the following response view plugins: ${clazzes.joinToString(",")}")
-
-        return clazzes.map {
-            // Initiate objects
-            it.getConstructor().newInstance().apply { configure(kafkaConsumerLagClient, kafkaConsumerLagClientConfig) }
-        }.toSet()
-    }
 
     private fun buildClientProp(): Properties = Properties().apply {
         this[AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaBootstrapServers
