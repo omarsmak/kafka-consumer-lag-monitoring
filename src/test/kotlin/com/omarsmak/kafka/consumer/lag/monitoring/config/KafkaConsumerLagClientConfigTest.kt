@@ -20,7 +20,6 @@ internal class KafkaConsumerLagClientConfigTest {
         assertEquals(setOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
         assertEquals(9000, config[KafkaConsumerLagClientConfig.HTTP_PORT])
         assertEquals(200, config[KafkaConsumerLagClientConfig.POLL_INTERVAL])
-        assertEquals("java", config[KafkaConsumerLagClientConfig.CLIENT_TYPE])
         assertEquals(500, config[KafkaConsumerLagClientConfig.LAG_THRESHOLD])
 
         // Test the type safe configs

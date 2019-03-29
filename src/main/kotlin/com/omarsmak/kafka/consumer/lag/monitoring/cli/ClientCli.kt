@@ -4,13 +4,14 @@ package com.omarsmak.kafka.consumer.lag.monitoring.cli
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
-import com.omarsmak.kafka.consumer.lag.monitoring.outputs.Console
-import com.omarsmak.kafka.consumer.lag.monitoring.outputs.Prometheus
+import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
+import com.omarsmak.kafka.consumer.lag.monitoring.response.ResponseView
 import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
+import org.reflections.Reflections
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
-import java.util.Properties
+import java.util.*
 import java.util.concurrent.Callable
 
 private val logger = KotlinLogging.logger {}
@@ -21,8 +22,6 @@ class ClientCli : Callable<Void> {
     companion object {
         const val DEFAULT_POLL_INTERVAL = 2000
         const val DEFAULT_HTTP_PORT = 9000
-        const val DEFAULT_CLIENT_TYPE = "java"
-        const val DEFAULT_LAG_THRESHOLD = 500
     }
 
     private val kafkaConsumerLagClient: KafkaConsumerLagClient by lazy {
@@ -34,7 +33,7 @@ class ClientCli : Callable<Void> {
         PROMETHEUS("prometheus")
     }
 
-    @Option(names = ["-m", "--mode"], description = ["Mode to run client, possible values 'console' or 'prometheus, default to 'console'"])
+    @Option(names = ["-m", "--mode"], description = ["Mode to run client, possible values 'console' or 'prometheus', default to 'console'"])
     var clientMode: String = ClientModes.CONSOLE.mode
 
     @Option(names = ["-b", "--bootstrap.servers"], description = ["A list of host/port pairs to use for establishing the initial connection to the Kafka cluster"], required = true)
@@ -50,16 +49,23 @@ class ClientCli : Callable<Void> {
     var httpPort: Int = DEFAULT_HTTP_PORT
 
     override fun call(): Void? {
-        // Load config
-        val configConsumerGroups = kafkaConsumerClients.split(",")
-
         // Scrap the consumer groups
-        val targetConsumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, configConsumerGroups)
+        val targetConsumerGroups = initializeConsumerGroups()
 
-        when (clientMode) {
-            ClientModes.CONSOLE.mode -> initializeConsoleMode(kafkaConsumerLagClient, targetConsumerGroups)
-            ClientModes.PROMETHEUS.mode -> initializePrometheusMode(kafkaConsumerLagClient, targetConsumerGroups, httpPort)
-            else -> logger.error("Output mode `$clientMode` is not valid")
+        // Load config
+        val config = initializeConfigurations(targetConsumerGroups)
+
+        // Initialize response view plugins
+        val responseViewPlugins = loadResponseViewPlugins(kafkaConsumerLagClient, config)
+
+        // Find our desired response view
+        val responseView = responseViewPlugins.find { it.identifier() == clientMode }
+
+        // Run our CLI
+        if (responseView != null) {
+            responseView.execute()
+        } else {
+            logger.error("Output mode `$clientMode` is not valid")
         }
 
         // Add the shutdown hook
@@ -70,15 +76,33 @@ class ClientCli : Callable<Void> {
         return null
     }
 
+    private fun initializeConsumerGroups(): Set<String> {
+        val configConsumerGroups = kafkaConsumerClients.split(",")
+        return Utils.getTargetConsumerGroups(kafkaConsumerLagClient, configConsumerGroups)
+    }
+
+    private fun initializeConfigurations(targetConsumerGroups: Set<String>) = KafkaConsumerLagClientConfig.create(mapOf(
+            KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS to kafkaBootstrapServers,
+            KafkaConsumerLagClientConfig.HTTP_PORT to httpPort,
+            KafkaConsumerLagClientConfig.POLL_INTERVAL to pollInterval,
+            KafkaConsumerLagClientConfig.CONSUMER_GROUPS to targetConsumerGroups
+    ))
+
+    private fun loadResponseViewPlugins(kafkaConsumerLagClient: KafkaConsumerLagClient, kafkaConsumerLagClientConfig: KafkaConsumerLagClientConfig): Set<ResponseView> {
+        // The reason for me to use reflection here is that I am planning to add dynamic loading for plugins, meaning that we can
+        // add the ability to add plugin through CLASSPATH or perhaps by creating a dedicated plugin folder
+        val reflections = Reflections(ResponseView::class.java.`package`.name)
+        val clazzes = reflections.getSubTypesOf(ResponseView::class.java)
+
+        logger.info("loaded the following response view plugins: ${clazzes.joinToString(",")}")
+
+        return clazzes.map {
+            // Initiate objects
+            it.getConstructor().newInstance().apply { configure(kafkaConsumerLagClient, kafkaConsumerLagClientConfig) }
+        }.toSet()
+    }
+
     private fun buildClientProp(): Properties = Properties().apply {
         this[AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaBootstrapServers
-    }
-
-    private fun initializeConsoleMode(kafkaConsumerLagClient: KafkaConsumerLagClient, consumers: Set<String>) {
-        Console(kafkaConsumerLagClient, pollInterval, DEFAULT_LAG_THRESHOLD).show(consumers)
-    }
-
-    private fun initializePrometheusMode(kafkaConsumerLagClient: KafkaConsumerLagClient, consumers: Set<String>, httpPort: Int) {
-        Prometheus(kafkaConsumerLagClient, pollInterval).initialize(consumers, httpPort)
     }
 }

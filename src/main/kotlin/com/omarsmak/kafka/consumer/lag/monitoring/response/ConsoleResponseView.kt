@@ -1,24 +1,37 @@
 @file:Suppress("ParameterListWrapping")
 
-package com.omarsmak.kafka.consumer.lag.monitoring.outputs
+package com.omarsmak.kafka.consumer.lag.monitoring.response
 
 import com.github.ajalt.mordant.TermColors
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
-import java.util.Timer
+import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
+import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
 /**
  * This class prints the lag outputs to the console based on the configuration passed
  */
-class Console(
-        private val client: KafkaConsumerLagClient,
-        private val monitoringPollInterval: Int,
-        private val monitoringLagThreshold: Int
-) {
-
+class ConsoleResponseView : ResponseView {
+    private lateinit var kafkaConsumerLagClient: KafkaConsumerLagClient
+    private lateinit var kafkaConsumerLagClientConfig: KafkaConsumerLagClientConfig
     private val termColors = TermColors()
+
+    override fun configure(kafkaConsumerLagClient: KafkaConsumerLagClient, config: KafkaConsumerLagClientConfig) {
+        this.kafkaConsumerLagClient = kafkaConsumerLagClient
+        this.kafkaConsumerLagClientConfig = config
+    }
+
+    override fun execute() {
+        val targetConsumerGroups: Set<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
+        val monitoringPollInterval: Long = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.POLL_INTERVAL]
+        val monitoringLagThreshold: Int = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.LAG_THRESHOLD]
+
+        show(targetConsumerGroups, monitoringPollInterval, monitoringLagThreshold)
+    }
+
+    override fun identifier() = "console"
 
     /**
      * Print [targetConsumerGroups] outputs to the console in this format:
@@ -27,13 +40,13 @@ class Console(
      * `Total consumer offsets: @totalConsumerOffsets`
      * `Total lag: @totalLag`
      */
-    fun show(targetConsumerGroups: Set<String>) {
-        Timer().scheduleAtFixedRate(0, monitoringPollInterval.toLong()) {
+    private fun show(targetConsumerGroups: Set<String>, monitoringPollInterval: Long, monitoringLagThreshold: Int) {
+        Timer().scheduleAtFixedRate(0, monitoringPollInterval) {
             print("\u001b[H\u001b[2J")
 
             targetConsumerGroups.forEach { consumer ->
                 try {
-                    val metrics = client.getConsumerLag(consumer)
+                    val metrics = kafkaConsumerLagClient.getConsumerLag(consumer)
                     println("Consumer group: $consumer")
                     println("==============================================================================")
                     println()

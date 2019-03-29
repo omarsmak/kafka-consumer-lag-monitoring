@@ -128,6 +128,8 @@ dependencies {
     compile "info.picocli:picocli:$picocliVersion"
     compile "org.slf4j:slf4j-simple:$slf4jVersion"
     compile "com.uchuhimo:konf:$konfVersion"
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
+
 
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"

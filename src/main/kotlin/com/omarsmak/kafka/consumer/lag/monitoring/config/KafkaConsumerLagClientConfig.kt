@@ -5,7 +5,7 @@ package com.omarsmak.kafka.consumer.lag.monitoring.config
 import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.ConfigException
 import com.uchuhimo.konf.ConfigSpec
-import java.util.Properties
+import java.util.*
 
 open class KafkaConsumerLagClientConfig private constructor(
     private val configs: Config
@@ -21,9 +21,6 @@ open class KafkaConsumerLagClientConfig private constructor(
 
         const val CONSUMER_GROUPS = "consumer.groups"
 
-        const val CLIENT_TYPE = "client.type"
-        private const val DEFAULT_CLIENT_TYPE = "java"
-
         const val LAG_THRESHOLD = "lag.threshold"
         private const val DEFAULT_LAG_THRESHOLD = 500
 
@@ -32,7 +29,6 @@ open class KafkaConsumerLagClientConfig private constructor(
         private val bootstrapServers by required<String>(name = BOOTSTRAP_SERVERS)
         private val pollInterval by optional(name = POLL_INTERVAL, default = DEFAULT_POLL_INTERVAL)
         private val consumerGroups by required<Set<String>>(name = CONSUMER_GROUPS)
-        private val clientType by optional(name = CLIENT_TYPE, default = DEFAULT_CLIENT_TYPE)
         private val lagTreshold by optional(name = LAG_THRESHOLD, default = DEFAULT_LAG_THRESHOLD)
 
         /**
@@ -63,7 +59,7 @@ open class KafkaConsumerLagClientConfig private constructor(
     /**
      * Get the value associated with a [key]
      */
-    operator fun get(key: String): Any? {
+    operator fun <T> get(key: String): T {
         try {
             return configs[key]
         } catch (ex: ConfigException) {
