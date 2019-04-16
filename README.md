@@ -161,7 +161,7 @@ public class ConsumerLagClientTest {
         properties.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
         
         // Create the client, we will use the Java client 
-        final KafkaConsumerLagClient kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create("properties);
+        final KafkaConsumerLagClient kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create(properties);
         
         // Print the lag of a Kafka consumer
         System.out.println(kafkaConsumerLagClient.getConsumerLag("awesome-consumer"));
@@ -185,7 +185,7 @@ object ConsumerLagClientTest {
         }
 
         // Create the client, we will use the Kafka AdminClient Java client
-        val kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create("properties)
+        val kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create(properties)
 
         // Print the lag of a Kafka consumer
         println(kafkaConsumerLagClient.getConsumerLag("awesome-consumer"))
