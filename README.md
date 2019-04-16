@@ -126,7 +126,7 @@ and under `<dependencies>..</dependencies>`:
 <dependency>
   <groupId>com.omarsmak.kafka</groupId>
   <artifactId>consumer-lag-monitoring</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 
@@ -139,7 +139,7 @@ repositories {
 ```
 and under `dependencies` the following: 
 ```
-compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.1'
+compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.3'
 
 ```
 **Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.
@@ -161,7 +161,7 @@ public class ConsumerLagClientTest {
         properties.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka1:9092");
         
         // Create the client, we will use the Java client 
-        final KafkaConsumerLagClient kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient("java", properties);
+        final KafkaConsumerLagClient kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create("properties);
         
         // Print the lag of a Kafka consumer
         System.out.println(kafkaConsumerLagClient.getConsumerLag("awesome-consumer"));
@@ -185,7 +185,7 @@ object ConsumerLagClientTest {
         }
 
         // Create the client, we will use the Kafka AdminClient Java client
-        val kafkaConsumerLagClient = KafkaConsumerLagClientFactory.getClient("java", properties)
+        val kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create("properties)
 
         // Print the lag of a Kafka consumer
         println(kafkaConsumerLagClient.getConsumerLag("awesome-consumer"))
