@@ -192,3 +192,6 @@ object ConsumerLagClientTest {
     }
 }
 ```
+
+## Build The Project
+Run `./gradlew clean build` on the top project folder which is as result, it will run all tests and build the Uber jar.
