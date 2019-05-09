@@ -107,7 +107,7 @@ The lag of a consumer group behind the head of a given partition of a topic. Cal
 The latest committed offset of a topic in a given partition.
 
 ##### `kafka_consumer_group_total_lag{group, topic}`
-The total lag of a consumer group behind the head of a topic. This gives the total lags over each partition, it provides good visibility but not a precise measurement since is not partition aware.
+The total lag of a consumer group behind the head of a topic. This gives the total lags from all partitions over each topic, it provides good visibility but not a precise measurement since is not partition aware.
 
 ## Usage as Library 
 If you want to use this client embedded into your application, you can achieve that by adding a [dependency](https://bintray.com/omarsmak/kafka/consumer-lag-monitoring) to this tool in your `pom.xml` or `gradle.build` as explained below:
