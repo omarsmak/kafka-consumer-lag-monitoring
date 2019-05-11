@@ -96,7 +96,7 @@ This mode will print the consumer lag per partition and the total lag among all 
        
 ### Prometheus Mode       
 In this mode, the tool will start an http server on a port that being set in `--http.port` startup parameter and it will expose an endpoint that is reachable via `localhost:<http.port>/metrics` or `localhost:<http.port>/prometheus` 
-so prometheus sever can scrap these metrics and expose them for example to grafana. It will expose the following metrics:
+so prometheus server can scrap these metrics and expose them for example to grafana. It will expose the following metrics:
 ##### `kafka_consumer_group_offset{group, topic, partition}`
 The latest committed offset of a consumer group in a given partition of a topic.
 
