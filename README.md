@@ -195,3 +195,7 @@ object ConsumerLagClientTest {
 
 ## Build The Project
 Run `./gradlew clean build` on the top project folder which is as result, it will run all tests and build the Uber jar.
+
+
+## Project Sponsors
+[![Alt text](./jetbrains.svg)](https://www.jetbrains.com/?from=kafka-consumer-lag-monitoring)
