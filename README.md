@@ -20,6 +20,9 @@ Quoting this [article](https://sematext.com/blog/kafka-consumer-lag-offsets-moni
 In summary, consumer lag tells us 2 things:
 * The closer the lag to 0, the more confidnce we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are processing messages in a healthy manner.
 * The further the lag from 0, the less confidnce we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are not processing messages in a healthy manner.
+
+### Supported Kafka Versions
+Since this client uses Kafka Admin Client and Kafka Consumer client version of *2+*, therefore this client supportes Kafka brokders from version **0.10.2+**.
  
 ## Installation and Usage
 #### Uber JAR
