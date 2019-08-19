@@ -31,7 +31,7 @@ internal class KafkaConsumerLagJavaClient (
         val offsets = javaAdminClient.listConsumerGroupOffsets(consumerGroup)
                 .partitionsToOffsetAndMetadata()
                 .get()
-        if (offsets == null || offsets.isEmpty())
+        if (offsets == null)
             throw KafkaConsumerLagClientException("Consumer group `$consumerGroup` does not exist in the Kafka cluster.")
 
         return getConsumerOffsetsPerTopic(offsets)
