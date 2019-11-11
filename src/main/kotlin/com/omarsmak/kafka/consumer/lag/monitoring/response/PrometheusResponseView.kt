@@ -93,19 +93,19 @@ class PrometheusResponseView : ResponseView {
                         kafkaConsumerTotalLagGauge.labels(consumer, topic.topicName).set(topic.totalLag.toDouble())
 
                         // Push kafka_consumer_group_offset metrics for each partition
-                        topic.latestConsumerOffsets.forEach { t, u ->
+                        topic.latestConsumerOffsets.forEach { (t, u) ->
                             kafkaConsumerGroupOffsetGauge
                                     .pushKafkaMetricsPerPartition(consumer, topic.topicName, t, u.toDouble())
                         }
 
                         // Push kafka_topic_latest_offsets metrics for each partition
-                        topic.latestTopicOffsets.forEach { t, u ->
+                        topic.latestTopicOffsets.forEach { (t, u) ->
                             kafkaTopicLatestOffsetsGauge
                                     .pushKafkaMetricsPerPartition(consumer, topic.topicName, t, u.toDouble())
                         }
 
                         // Push kafka_consumer_group_partition_lag metrics for each partition
-                        topic.lagPerPartition.forEach { t, u ->
+                        topic.lagPerPartition.forEach { (t, u) ->
                             kafkaConsumerLagPerPartitionGauge
                                     .pushKafkaMetricsPerPartition(consumer, topic.topicName, t, u.toDouble())
                         }

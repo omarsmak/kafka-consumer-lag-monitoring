@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/kafka-consumer-lag-monitoring.iml" filepath="$PROJECT_DIR$/.idea/kafka-consumer-lag-monitoring.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_main.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_main.iml" group="kafka-consumer-lag-monitoring" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_test.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring_test.iml" group="kafka-consumer-lag-monitoring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring.main.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring.test.iml" filepath="$PROJECT_DIR$/.idea/modules/kafka-consumer-lag-monitoring.test.iml" />
     </modules>
   </component>
 </project>
