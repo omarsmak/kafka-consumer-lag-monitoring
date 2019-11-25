@@ -9,7 +9,7 @@ buildscript {
         picocliVersion = '4.1.0'
         mordantVersion = '1.2.1'
         slf4jVersion = '1.7.29'
-        konfVersion = '0.13.2'
+        konfVersion = '0.14.1'
         mockkVersion = '1.9.3'
     }
     dependencies {
