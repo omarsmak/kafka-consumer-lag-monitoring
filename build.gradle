@@ -1,18 +1,16 @@
 buildscript {
     ext {
         kotlinVersion = '1.3.21'
-        kotlinLoggingVersion = '1.6.10'
-        kotlinLinterVersion = '1.4.0'
+        kotlinLoggingVersion = '1.7.8'
         kafkaVersion = '2.3.1'
-        shadowJarVersion = '4.0.4'
-        junitVersion = '5.4.0'
+        junitVersion = '5.5.2'
         prometheusVersion = '0.8.0'
         jfrogBuildExtractorVersion = '4.5.4'
-        picocliVersion = '3.9.3'
-        mordantVersion = '1.2.0'
-        slf4jVersion = '1.7.25'
-        konfVersion = '0.13.1'
-        mockkVersion = '1.9.1'
+        picocliVersion = '4.1.0'
+        mordantVersion = '1.2.1'
+        slf4jVersion = '1.7.29'
+        konfVersion = '0.13.2'
+        mockkVersion = '1.9.3'
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
@@ -26,16 +24,16 @@ buildscript {
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.3.21"
-    id 'com.github.johnrengelman.shadow' version "4.0.4"
-    id 'com.adarshr.test-logger' version '1.3.1'
-    id 'com.palantir.git-version' version '0.12.0-rc2'
-    id 'io.gitlab.arturbosch.detekt' version '1.0.0-RC13'
+    id 'com.github.johnrengelman.shadow' version "5.2.0"
+    id 'com.adarshr.test-logger' version '2.0.0'
+    id 'com.palantir.git-version' version '0.12.2'
+    id 'io.gitlab.arturbosch.detekt' version '1.2.0'
     id 'maven-publish'
     id "com.jfrog.bintray" version "1.8.4"
     id 'java-library'
-    id 'com.google.cloud.tools.jib' version '1.0.0'
+    id 'com.google.cloud.tools.jib' version '1.8.0'
     id 'jacoco'
-    id 'com.github.kt3k.coveralls' version '2.8.2'
+    id 'com.github.kt3k.coveralls' version '2.8.4'
 }
 
 detekt {
