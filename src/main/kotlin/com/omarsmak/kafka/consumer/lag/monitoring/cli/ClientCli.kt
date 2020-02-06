@@ -9,8 +9,8 @@ import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
-import java.util.*
 import java.util.concurrent.Callable
+import java.util.Properties
 
 @Command(mixinStandardHelpOptions = true)
 class ClientCli : Callable<Void> {
@@ -34,8 +34,8 @@ class ClientCli : Callable<Void> {
     @Option(names = ["-m", "--mode"], description = ["Mode to run client, possible values 'console' or 'prometheus', default to 'console'"])
     var clientMode: String = ClientModes.CONSOLE.mode
 
-    @Option(names = ["-b", "--bootstrap.servers"], description = ["A list of host/port pairs to use for establishing the initial connection to the Kafka cluster"], required = true)
-    lateinit var kafkaBootstrapServers: String
+    @Option(names = ["-b", "--bootstrap.servers"], description = ["A list of host/port pairs to use for establishing the initial connection to the Kafka cluster"])
+    var kafkaBootstrapServers: String = ""
 
     @Option(names = ["-c", "--consumer.groups"], description = ["A list of Kafka consumer groups or list ending with star (*) to fetch all consumers with matching pattern, e.g: 'test_v*'"], required = true)
     lateinit var kafkaConsumerClients: String
@@ -45,6 +45,9 @@ class ClientCli : Callable<Void> {
 
     @Option(names = ["-p", "-http.port"], description = ["Http port that is used to expose metrics in case prometheus mode is selected, default to 9000"])
     var httpPort: Int = DEFAULT_HTTP_PORT
+
+    @Option(names = ["-f", "--kafka.properties.file"], description = ["Optional. Properties file for Kafka AdminClient configurations, this is the typical Kafka properties file that can be used in the AdminClient. For more info, please take a look at Kafka AdminClient configurations documentation."])
+    var kafkaPropertiesFile: String = ""
 
     override fun call(): Void? {
         // Scrap the consumer groups
@@ -88,5 +91,9 @@ class ClientCli : Callable<Void> {
 
     private fun buildClientProp(): Properties = Properties().apply {
         this[AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaBootstrapServers
+
+        if (kafkaPropertiesFile.isNotEmpty()) {
+            putAll(Utils.loadPropertiesFile(kafkaPropertiesFile).toMap())
+        }
     }
 }

@@ -7,6 +7,7 @@ import mu.KotlinLogging
 import org.reflections.Reflections
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.util.*
 
 object Utils {
@@ -50,5 +51,18 @@ object Utils {
             // Initiate objects
             it.getConstructor().newInstance().apply { configure(kafkaConsumerLagClient, kafkaConsumerLagClientConfig) }
         }.toSet()
+    }
+
+    fun loadPropertiesFile(filePath: String): Properties {
+        val inputStream: FileInputStream? = File(filePath).inputStream()
+        val prop = Properties()
+
+        if (inputStream == null) {
+            throw FileNotFoundException("File '$filePath' not found!")
+        }
+
+        prop.load(inputStream)
+
+        return prop
     }
 }
