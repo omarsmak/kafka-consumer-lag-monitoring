@@ -41,24 +41,42 @@ This client is available as well in [docker hub](https://hub.docker.com/r/omarsm
 
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
-        Usage: <main class> [-hV] -b=<kafkaBootstrapServers> -c=<kafkaConsumerClients>
+        Usage: <main class> [-hV] [-b=<kafkaBootstrapServers>]
+                            -c=<kafkaConsumerClients> [-f=<kafkaPropertiesFile>]
                             [-i=<pollInterval>] [-m=<clientMode>] [-p=<httpPort>]
           -b, --bootstrap.servers=<kafkaBootstrapServers>
-                                    A list of host/port pairs to use for establishing the
-                                      initial connection to the Kafka cluster
+                                    A list of host/port pairs to use for establishing
+                                      the initial connection to the Kafka cluster
           -c, --consumer.groups=<kafkaConsumerClients>
                                     A list of Kafka consumer groups or list ending with
-                                      (*) to fetch all consumers with matching pattern, e.g: 'test_v*'
+                                      star (*) to fetch all consumers with matching
+                                      pattern, e.g: 'test_v*'
+          -f, --kafka.properties.file=<kafkaPropertiesFile>
+                                    Optional. Properties file for Kafka AdminClient
+                                      configurations, this is the typical Kafka
+                                      properties file that can be used in the
+                                      AdminClient. For more info, please take a look at
+                                      Kafka AdminClient configurations documentation.
           -h, --help                Show this help message and exit.
           -i, --poll.interval=<pollInterval>
-                                    Interval delay in ms to that refreshes the client lag
-                                      metrics, default to 2000ms
+                                    Interval delay in ms to that refreshes the client
+                                      lag metrics, default to 2000ms
           -m, --mode=<clientMode>   Mode to run client, possible values 'console' or
                                       'prometheus', default to 'console'
-          -p, --http.port=<httpPort> Http port that is used to expose metrics in case
+          -p, -http.port=<httpPort> Http port that is used to expose metrics in case
                                       prometheus mode is selected, default to 9000
           -V, --version             Print version information and exit.
+          
+#### New in version 0.0.6: 
+Now the client has the ability to accept a properties file with the admin client/consumer configuration that you typically use with Kafka Clients. This option can be accessible through the flag `-f`. example:
 
+    java -jar kafka-consumer-lag-monitoring.jar -f my/path/file.properties -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000      
+    
+To learn more about the configuration that you can use here, please refer the following documentations:
+
+Kafka AdminClient configs: https://kafka.apache.org/documentation/#adminclientconfigs  
+
+Kafka Consumer configs: https://kafka.apache.org/documentation/#consumerconfigs
 ### Console Mode
 This mode will print the consumer lag per partition and the total lag among all partitions and continuously refreshing the metrics per the value of `--poll.interval` startup parameter. Example output:  
 
@@ -99,7 +117,11 @@ This mode will print the consumer lag per partition and the total lag among all 
        
 ### Prometheus Mode       
 In this mode, the tool will start an http server on a port that being set in `--http.port` startup parameter and it will expose an endpoint that is reachable via `localhost:<http.port>/metrics` or `localhost:<http.port>/prometheus` 
-so prometheus server can scrap these metrics and expose them for example to grafana. It will expose the following metrics:
+so prometheus server can scrap these metrics and expose them for example to grafana. 
+
+    java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000
+
+It will expose the following metrics:
 ##### `kafka_consumer_group_offset{group, topic, partition}`
 The latest committed offset of a consumer group in a given partition of a topic.
 
