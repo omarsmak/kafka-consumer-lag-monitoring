@@ -10,5 +10,5 @@ import picocli.CommandLine
  */
 
 fun main(arg: Array<String>) {
-    CommandLine.call(ClientCli(), *arg)
+    CommandLine(ClientCli()).execute(*arg)
 }
