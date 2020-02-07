@@ -151,7 +151,7 @@ and under `<dependencies>..</dependencies>`:
 <dependency>
   <groupId>com.omarsmak.kafka</groupId>
   <artifactId>consumer-lag-monitoring</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.6</version>
 </dependency>
 ```
 
@@ -164,7 +164,7 @@ repositories {
 ```
 and under `dependencies` the following: 
 ```
-compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.3'
+compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.6'
 
 ```
 **Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.
