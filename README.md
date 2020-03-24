@@ -39,6 +39,15 @@ This client is available as well in [docker hub](https://hub.docker.com/r/omarsm
  ```
  **Note:** By default, port `9000` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9000`. However you can still change the corresponding docker mapped port to anything of your choice. 
 
+#### Kubernetes
+Currently usage of environment variables are not directly supported. To support container orchestration, an entrypoint script is used. Provide required arguments as "args" in kubernetes deployments.
+
+You can use placeholders in the arg command and fill these settings by environment variables, secrets or configmaps.
+
+```
+args: ["-b", "$(BOOTSTRAP_SERVERS)","-m", "$(MODE)","-c", "$(CONSUMER_GROUPS)","-i", "$(POLL_INTERVAL)", "-p", "$(HTTP_PORT)"]
+```
+
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
         Usage: <main class> [-hV] [-b=<kafkaBootstrapServers>]
