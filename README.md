@@ -48,6 +48,16 @@ You can use placeholders in the arg command and fill these settings by environme
 args: ["-b", "$(BOOTSTRAP_SERVERS)","-m", "$(MODE)","-c", "$(CONSUMER_GROUPS)","-i", "$(POLL_INTERVAL)", "-p", "$(HTTP_PORT)"]
 ```
 
+## Changelog
+#### 0.0.7:
+- Issue #17: Now this client will show newly joined consumer groups as well **without the need to restart the client**. You should start it once and it will always refresh the consumer groups list according to the poll interval.
+- Kafka client updated to version 2.5.0.
+
+#### 0.0.6:
+- Issue #8: Support configuration file as parameter
+- Kafka client updated to version 2.4.1.
+
+
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
         Usage: <main class> [-hV] [-b=<kafkaBootstrapServers>]
@@ -86,6 +96,7 @@ To learn more about the configuration that you can use here, please refer the fo
 Kafka AdminClient configs: https://kafka.apache.org/documentation/#adminclientconfigs  
 
 Kafka Consumer configs: https://kafka.apache.org/documentation/#consumerconfigs
+
 ### Console Mode
 This mode will print the consumer lag per partition and the total lag among all partitions and continuously refreshing the metrics per the value of `--poll.interval` startup parameter. Example output:  
 
@@ -160,7 +171,7 @@ and under `<dependencies>..</dependencies>`:
 <dependency>
   <groupId>com.omarsmak.kafka</groupId>
   <artifactId>consumer-lag-monitoring</artifactId>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
 </dependency>
 ```
 
@@ -173,7 +184,7 @@ repositories {
 ```
 and under `dependencies` the following: 
 ```
-compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.6'
+compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.7'
 
 ```
 **Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.
