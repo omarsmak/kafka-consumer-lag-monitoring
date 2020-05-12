@@ -28,7 +28,7 @@ open class KafkaConsumerLagClientConfig private constructor(
         private val httpPort by optional(name = HTTP_PORT, default = DEFAULT_HTTP_PORT)
         private val bootstrapServers by required<String>(name = BOOTSTRAP_SERVERS)
         private val pollInterval by optional(name = POLL_INTERVAL, default = DEFAULT_POLL_INTERVAL)
-        private val consumerGroups by required<Set<String>>(name = CONSUMER_GROUPS)
+        private val consumerGroups by required<List<String>>(name = CONSUMER_GROUPS)
         private val lagTreshold by optional(name = LAG_THRESHOLD, default = DEFAULT_LAG_THRESHOLD)
 
         /**

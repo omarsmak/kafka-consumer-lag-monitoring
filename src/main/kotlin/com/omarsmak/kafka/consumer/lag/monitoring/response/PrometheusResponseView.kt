@@ -2,6 +2,7 @@
 
 package com.omarsmak.kafka.consumer.lag.monitoring.response
 
+import com.omarsmak.kafka.consumer.lag.monitoring.cli.Utils
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
 import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
@@ -59,7 +60,7 @@ class PrometheusResponseView : ResponseView {
     }
 
     override fun execute() {
-        val targetConsumerGroups: Set<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
+        val targetConsumerGroups: List<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
         val monitoringPollInterval: Long = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.POLL_INTERVAL]
         val httpPort: Int = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.HTTP_PORT]
 
@@ -75,7 +76,7 @@ class PrometheusResponseView : ResponseView {
      * `kafka_consumer_group_total_lag{group, topic}`
      * `kafka_topic_latest_offsets{group, topic, partition}
      */
-    private fun initialize(client: KafkaConsumerLagClient, targetConsumerGroups: Set<String>, port: Int, monitoringPollInterval: Long) {
+    private fun initialize(client: KafkaConsumerLagClient, initialConsumerGroups: List<String>, port: Int, monitoringPollInterval: Long) {
         // Start HTTP our server
         startServer(port)
 
@@ -83,7 +84,10 @@ class PrometheusResponseView : ResponseView {
 
         // Start publishing our metrics
         Timer().scheduleAtFixedRate(0, monitoringPollInterval) {
-            targetConsumerGroups.forEach { consumer ->
+
+            val consumers = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initialConsumerGroups)
+
+            consumers.forEach { consumer ->
                 try {
                     val lag = client.getConsumerLag(consumer)
 

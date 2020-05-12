@@ -17,7 +17,7 @@ internal class KafkaConsumerLagClientConfigTest {
         ))
 
         assertEquals("kafka1:9092,kafka2:9092", config[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
-        assertEquals(setOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
+        assertEquals(listOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
         assertEquals(9000, config[KafkaConsumerLagClientConfig.HTTP_PORT])
         assertEquals(2000, config[KafkaConsumerLagClientConfig.POLL_INTERVAL])
         assertEquals(500, config[KafkaConsumerLagClientConfig.LAG_THRESHOLD])
@@ -38,7 +38,7 @@ internal class KafkaConsumerLagClientConfigTest {
         ))
 
         assertEquals("kafka1:9092,kafka2:9092", config[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
-        assertEquals(setOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
+        assertEquals(listOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
         assertEquals(3000, config[KafkaConsumerLagClientConfig.HTTP_PORT])
         assertEquals(100, config[KafkaConsumerLagClientConfig.POLL_INTERVAL])
     }
@@ -84,7 +84,7 @@ internal class KafkaConsumerLagClientConfigTest {
         })
 
         assertEquals("kafka1:9092,kafka2:9092", config[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
-        assertEquals(setOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
+        assertEquals(listOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
     }
 
     @Test

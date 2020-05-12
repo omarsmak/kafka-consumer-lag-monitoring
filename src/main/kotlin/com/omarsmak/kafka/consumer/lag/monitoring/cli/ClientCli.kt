@@ -77,12 +77,9 @@ class ClientCli : Callable<Void> {
         return null
     }
 
-    private fun initializeConsumerGroups(): Set<String> {
-        val configConsumerGroups = kafkaConsumerClients.split(",")
-        return Utils.getTargetConsumerGroups(kafkaConsumerLagClient, configConsumerGroups)
-    }
+    private fun initializeConsumerGroups(): List<String> = kafkaConsumerClients.split(",")
 
-    private fun initializeConfigurations(targetConsumerGroups: Set<String>) = KafkaConsumerLagClientConfig.create(mapOf(
+    private fun initializeConfigurations(targetConsumerGroups: List<String>) = KafkaConsumerLagClientConfig.create(mapOf(
             KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS to kafkaBootstrapServers,
             KafkaConsumerLagClientConfig.HTTP_PORT to httpPort,
             KafkaConsumerLagClientConfig.POLL_INTERVAL to pollInterval,

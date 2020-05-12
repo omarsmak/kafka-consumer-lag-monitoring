@@ -3,6 +3,7 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.response
 
 import com.github.ajalt.mordant.TermColors
+import com.omarsmak.kafka.consumer.lag.monitoring.cli.Utils
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
@@ -24,7 +25,7 @@ class ConsoleResponseView : ResponseView {
     }
 
     override fun execute() {
-        val targetConsumerGroups: Set<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
+        val targetConsumerGroups: List<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
         val monitoringPollInterval: Long = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.POLL_INTERVAL]
         val monitoringLagThreshold: Int = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.LAG_THRESHOLD]
 
@@ -40,11 +41,13 @@ class ConsoleResponseView : ResponseView {
      * `Total consumer offsets: @totalConsumerOffsets`
      * `Total lag: @totalLag`
      */
-    private fun show(targetConsumerGroups: Set<String>, monitoringPollInterval: Long, monitoringLagThreshold: Int) {
+    private fun show(initialConsumerGroups: List<String>, monitoringPollInterval: Long, monitoringLagThreshold: Int) {
         Timer().scheduleAtFixedRate(0, monitoringPollInterval) {
             print("\u001b[H\u001b[2J")
 
-            targetConsumerGroups.forEach { consumer ->
+            val consumers = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initialConsumerGroups)
+
+            consumers.forEach { consumer ->
                 try {
                     val metrics = kafkaConsumerLagClient.getConsumerLag(consumer)
                     println("Consumer group: $consumer")
