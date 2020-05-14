@@ -223,7 +223,7 @@ jib {
         }
     }
     container {
-        ports = ["9000"]
+        ports = ["9739"]
         jvmFlags = [
                 "-XX:+UseCompressedOops",
                 "-XX:MaxRAMPercentage=80",

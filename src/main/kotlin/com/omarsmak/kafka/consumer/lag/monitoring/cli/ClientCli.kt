@@ -43,7 +43,7 @@ class ClientCli : Callable<Void> {
     @Option(names = ["-i", "--poll.interval"], description = ["Interval delay in ms to that refreshes the client lag metrics, default to 2000ms"])
     var pollInterval: Int = DEFAULT_POLL_INTERVAL
 
-    @Option(names = ["-p", "-http.port"], description = ["Http port that is used to expose metrics in case prometheus mode is selected, default to 9000"])
+    @Option(names = ["-p", "-http.port"], description = ["Http port that is used to expose metrics in case prometheus mode is selected, default to 9739"])
     var httpPort: Int = DEFAULT_HTTP_PORT
 
     @Option(names = ["-f", "--kafka.properties.file"], description = ["Optional. Properties file for Kafka AdminClient configurations, this is the typical Kafka properties file that can be used in the AdminClient. For more info, please take a look at Kafka AdminClient configurations documentation."])

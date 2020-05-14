@@ -12,7 +12,7 @@ open class KafkaConsumerLagClientConfig private constructor(
 ) {
     companion object : ConfigSpec(prefix = "") {
         const val HTTP_PORT = "http.port"
-        const val DEFAULT_HTTP_PORT = 9000
+        const val DEFAULT_HTTP_PORT = 9739
 
         const val BOOTSTRAP_SERVERS = "bootstrap.servers"
 

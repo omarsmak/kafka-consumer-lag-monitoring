@@ -35,9 +35,9 @@ java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:90
 This client is available as well in [docker hub](https://hub.docker.com/r/omarsmak/kafka-consumer-lag-monitoring), the docker image is built on top of Java 11 JRE image and optimized to run in container orchestration frameworks
  such as kubernetes as efficient as possible. Assuming you want to run it locally and you have docker daemon installed, you can run it like this for example:
  ```
- docker run -p 9000:9000 --rm omarsmak/kafka-consumer-lag-monitoring:latest -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000 -p 9000
+ docker run -p 9739:9739 --rm omarsmak/kafka-consumer-lag-monitoring:latest -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000 -p 9739
  ```
- **Note:** By default, port `9000` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9000`. However you can still change the corresponding docker mapped port to anything of your choice. 
+ **Note:** By default, port `9739` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9739`. However you can still change the corresponding docker mapped port to anything of your choice. 
 
 #### Kubernetes
 Currently usage of environment variables are not directly supported. To support container orchestration, an entrypoint script is used. Provide required arguments as "args" in kubernetes deployments.
@@ -83,7 +83,7 @@ args: ["-b", "$(BOOTSTRAP_SERVERS)","-m", "$(MODE)","-c", "$(CONSUMER_GROUPS)","
           -m, --mode=<clientMode>   Mode to run client, possible values 'console' or
                                       'prometheus', default to 'console'
           -p, -http.port=<httpPort> Http port that is used to expose metrics in case
-                                      prometheus mode is selected, default to 9000
+                                      prometheus mode is selected, default to 9739
           -V, --version             Print version information and exit.
           
 #### New in version 0.0.6: 
