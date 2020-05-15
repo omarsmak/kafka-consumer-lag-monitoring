@@ -18,12 +18,12 @@ internal class KafkaConsumerLagClientConfigTest {
 
         assertEquals("kafka1:9092,kafka2:9092", config[KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS])
         assertEquals(listOf("consumer_1", "consumer_2"), config[KafkaConsumerLagClientConfig.CONSUMER_GROUPS])
-        assertEquals(9000, config[KafkaConsumerLagClientConfig.HTTP_PORT])
+        assertEquals(9739, config[KafkaConsumerLagClientConfig.HTTP_PORT])
         assertEquals(2000, config[KafkaConsumerLagClientConfig.POLL_INTERVAL])
         assertEquals(500, config[KafkaConsumerLagClientConfig.LAG_THRESHOLD])
 
         // Test the type safe configs
-        assertNotEquals("9000", config[KafkaConsumerLagClientConfig.HTTP_PORT])
+        assertNotEquals("9739", config[KafkaConsumerLagClientConfig.HTTP_PORT])
         assertNotEquals("2000", config[KafkaConsumerLagClientConfig.POLL_INTERVAL])
         assertNotEquals("500", config[KafkaConsumerLagClientConfig.LAG_THRESHOLD])
     }
