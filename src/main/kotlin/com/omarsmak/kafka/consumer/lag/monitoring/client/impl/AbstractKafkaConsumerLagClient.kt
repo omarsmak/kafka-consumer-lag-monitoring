@@ -47,6 +47,12 @@ internal abstract class AbstractKafkaConsumerLagClient(
         closeClients()
     }
 
+    override fun getConsumerMemberLag(consumerGroup: String): Map<String, List<Lag>> {
+        val consumerMemberOffsets = getConsumerGroupMembersOffsets(consumerGroup)
+
+        return consumerMemberOffsets.mapValues { it -> it.value.map { getConsumerLagPerTopic(it) } }
+    }
+
     private fun getConsumerLagPerTopic(consumerOffsets: Offsets): Lag {
         val topicOffsets = getTopicOffsets(consumerOffsets.topicName)
 
