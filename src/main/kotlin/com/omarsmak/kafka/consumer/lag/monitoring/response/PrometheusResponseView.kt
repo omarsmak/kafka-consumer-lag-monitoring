@@ -44,6 +44,12 @@ class PrometheusResponseView : ResponseView {
                 .labelNames("group", "topic")
                 .register()
 
+        private val kafkaConsumerMemberLag = Gauge.build()
+                .name("kafka_consumer_group_member_lag")
+                .help("The total lag of a consumer group member behind the head of a topic. This gives the total lags over each consumer member within consumer group")
+                .labelNames("group", "member", "topic")
+                .register()
+
         private fun startServer(port: Int) {
             // Start a HTTP server to expose metrics
             logger.info("Starting HTTP server on $port....")
@@ -112,6 +118,15 @@ class PrometheusResponseView : ResponseView {
                         topic.lagPerPartition.forEach { (t, u) ->
                             kafkaConsumerLagPerPartitionGauge
                                     .pushKafkaMetricsPerPartition(consumer, topic.topicName, t, u.toDouble())
+                        }
+                    }
+
+                    val memberLag = client.getConsumerMemberLag(consumer)
+
+                    // Push metrics
+                    memberLag.forEach { (member, lags) ->
+                        lags.forEach {
+                            kafkaConsumerMemberLag.labels(consumer, member, it.topicName).set(it.totalLag.toDouble())
                         }
                     }
                 } catch (e: KafkaConsumerLagClientException) {
