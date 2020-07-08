@@ -23,6 +23,25 @@ In summary, consumer lag tells us 2 things:
 
 ### Supported Kafka Versions
 Since this client uses Kafka Admin Client and Kafka Consumer client version of *2+*, therefore this client supportes Kafka brokders from version **0.10.2+**.
+
+## Features
+* Rich metrics that show detailed consumer lags on both level, on the consumer group level and on the consumer member level for more granularity.
+* Metrics are available for both, console and Prometheus. 
+* Ready to use thin Docker image for your cloud deployments such as Kubernetes.
+* The tool is also available as maven package in case you want to embedded it into your application.
+
+## Changelog
+#### 0.0.8: 
+- Issue #23: Extend Lag stats on consumer member level.
+- Issue #20: Support consumer group and topic deletion on the fly.
+- Issue #21: Change default port to 9739
+#### 0.0.7:
+- Issue #17: Now this client will show newly joined consumer groups as well **without the need to restart the client**. You should start it once and it will always refresh the consumer groups list according to the poll interval.
+- Kafka client updated to version 2.5.0.
+
+#### 0.0.6:
+- Issue #8: Support configuration file as parameter
+- Kafka client updated to version 2.4.1.
  
 ## Installation and Usage
 #### Uber JAR
@@ -47,16 +66,6 @@ You can use placeholders in the arg command and fill these settings by environme
 ```
 args: ["-b", "$(BOOTSTRAP_SERVERS)","-m", "$(MODE)","-c", "$(CONSUMER_GROUPS)","-i", "$(POLL_INTERVAL)", "-p", "$(HTTP_PORT)"]
 ```
-
-## Changelog
-#### 0.0.7:
-- Issue #17: Now this client will show newly joined consumer groups as well **without the need to restart the client**. You should start it once and it will always refresh the consumer groups list according to the poll interval.
-- Kafka client updated to version 2.5.0.
-
-#### 0.0.6:
-- Issue #8: Support configuration file as parameter
-- Kafka client updated to version 2.4.1.
-
 
 ## Usage
     java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
@@ -154,6 +163,12 @@ The latest committed offset of a topic in a given partition.
 ##### `kafka_consumer_group_total_lag{group, topic}`
 The total lag of a consumer group behind the head of a topic. This gives the total lags from all partitions over each topic, it provides good visibility but not a precise measurement since is not partition aware.
 
+##### `kafka_consumer_group_member_lag{group, member, topic}`
+The total lag of a consumer group member behind the head of a topic. This gives the total lags over each consumer member within consumer group.
+
+##### `kafka_consumer_group_member_partition_lag{group, member, topic, partition}`
+The lag of a consumer member within consumer group behind the head of a given partition of a topic.
+
 ## Usage as Library 
 If you want to use this client embedded into your application, you can achieve that by adding a [dependency](https://bintray.com/omarsmak/kafka/consumer-lag-monitoring) to this tool in your `pom.xml` or `gradle.build` as explained below:
 #### Maven
@@ -171,7 +186,7 @@ and under `<dependencies>..</dependencies>`:
 <dependency>
   <groupId>com.omarsmak.kafka</groupId>
   <artifactId>consumer-lag-monitoring</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
 </dependency>
 ```
 
@@ -184,7 +199,7 @@ repositories {
 ```
 and under `dependencies` the following: 
 ```
-compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.7'
+compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.8'
 
 ```
 **Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.

@@ -44,10 +44,16 @@ class PrometheusResponseView : ResponseView {
                 .labelNames("group", "topic")
                 .register()
 
-        private val kafkaConsumerMemberLag = Gauge.build()
+        private val kafkaConsumerMemberLagGauge = Gauge.build()
                 .name("kafka_consumer_group_member_lag")
                 .help("The total lag of a consumer group member behind the head of a topic. This gives the total lags over each consumer member within consumer group")
                 .labelNames("group", "member", "topic")
+                .register()
+
+        private val kafkaConsumerMemberPartitionLagGauge = Gauge.build()
+                .name("kafka_consumer_group_member_partition_lag")
+                .help("The lag of a consumer member within consumer group behind the head of a given partition of a topic")
+                .labelNames("group", "member", "topic", "partition")
                 .register()
 
         private fun startServer(port: Int) {
@@ -80,6 +86,8 @@ class PrometheusResponseView : ResponseView {
      * `kafka_consumer_group_offset{group, topic, partition}`
      * `kafka_consumer_group_partition_lag{group, topic, partition}`
      * `kafka_consumer_group_total_lag{group, topic}`
+     * `kafka_consumer_group_member_lag{group, member, topic}`
+     * `kafka_consumer_group_member_partition_lag{group, member, topic, partition}`
      * `kafka_topic_latest_offsets{group, topic, partition}
      */
     private fun initialize(client: KafkaConsumerLagClient, initialConsumerGroups: List<String>, port: Int, monitoringPollInterval: Long) {
@@ -90,6 +98,13 @@ class PrometheusResponseView : ResponseView {
 
         // Start publishing our metrics
         Timer().scheduleAtFixedRate(0, monitoringPollInterval) {
+
+            // reset metrics
+            kafkaConsumerGroupOffsetGauge.clear()
+            kafkaConsumerLagPerPartitionGauge.clear()
+            kafkaTopicLatestOffsetsGauge.clear()
+            kafkaConsumerTotalLagGauge.clear()
+            kafkaConsumerMemberLagGauge.clear()
 
             val consumers = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initialConsumerGroups)
 
@@ -126,7 +141,11 @@ class PrometheusResponseView : ResponseView {
                     // Push metrics
                     memberLag.forEach { (member, lags) ->
                         lags.forEach {
-                            kafkaConsumerMemberLag.labels(consumer, member, it.topicName).set(it.totalLag.toDouble())
+                            kafkaConsumerMemberLagGauge.labels(consumer, member, it.topicName).set(it.totalLag.toDouble())
+
+                            it.lagPerPartition.forEach { (t, u) ->
+                                kafkaConsumerMemberPartitionLagGauge.labels(consumer, member, it.topicName, t.toString()).set(u.toDouble())
+                            }
                         }
                     }
                 } catch (e: KafkaConsumerLagClientException) {
