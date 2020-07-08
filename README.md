@@ -25,10 +25,10 @@ In summary, consumer lag tells us 2 things:
 Since this client uses Kafka Admin Client and Kafka Consumer client version of *2+*, therefore this client supportes Kafka brokders from version **0.10.2+**.
 
 ## Features
-* Rich metrics that show detailed consumer lags on both level, on the consumer group level and on the consumer member level for more granularity.
-* Metrics are available for both, console and Prometheus. 
-* Ready to use thin Docker image for your cloud deployments such as Kubernetes.
-* The tool is also available as maven package in case you want to embedded it into your application.
+* Rich metrics that show detailed consumer lags on both levels, on the **consumer group level** and on the **consumer member level** for more granularity.
+* Metrics are available for both, **console and Prometheus**. 
+* Ready to use thin Docker image for your cloud deployments such as **Kubernetes**.
+* The tool is also available as **maven package** in case you want to embedded it into your application.
 
 ## Changelog
 #### 0.0.8: 
