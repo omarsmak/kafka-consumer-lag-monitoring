@@ -1,0 +1,4 @@
+rootProject.name = "kafka-consumer-lag-monitoring"
+
+include 'monitoring-client'
+include 'monitoring-cli'
