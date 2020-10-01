@@ -4,7 +4,6 @@ package com.omarsmak.kafka.consumer.lag.monitoring.cli
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
-import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
 import mu.KotlinLogging
 import org.apache.kafka.clients.admin.AdminClientConfig
 import picocli.CommandLine.Command
@@ -18,8 +17,19 @@ class ClientCli : Callable<Void> {
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        const val DEFAULT_POLL_INTERVAL = KafkaConsumerLagClientConfig.DEFAULT_POLL_INTERVAL
-        const val DEFAULT_HTTP_PORT = KafkaConsumerLagClientConfig.DEFAULT_HTTP_PORT
+
+        const val HTTP_PORT = "http.port"
+        const val DEFAULT_HTTP_PORT = 9739
+
+        const val BOOTSTRAP_SERVERS = "bootstrap.servers"
+
+        const val POLL_INTERVAL = "poll.interval"
+        const val DEFAULT_POLL_INTERVAL = 2000
+
+        const val CONSUMER_GROUPS = "consumer.groups"
+
+        const val LAG_THRESHOLD = "lag.threshold"
+        const val DEFAULT_LAG_THRESHOLD = 500
     }
 
     private val kafkaConsumerLagClient: KafkaConsumerLagClient by lazy {
@@ -79,12 +89,12 @@ class ClientCli : Callable<Void> {
 
     private fun initializeConsumerGroups(): List<String> = kafkaConsumerClients.split(",")
 
-    private fun initializeConfigurations(targetConsumerGroups: List<String>) = KafkaConsumerLagClientConfig.create(mapOf(
-            KafkaConsumerLagClientConfig.BOOTSTRAP_SERVERS to kafkaBootstrapServers,
-            KafkaConsumerLagClientConfig.HTTP_PORT to httpPort,
-            KafkaConsumerLagClientConfig.POLL_INTERVAL to pollInterval,
-            KafkaConsumerLagClientConfig.CONSUMER_GROUPS to targetConsumerGroups
-    ))
+    private fun initializeConfigurations(targetConsumerGroups: List<String>) = mapOf(
+            BOOTSTRAP_SERVERS to kafkaBootstrapServers,
+            HTTP_PORT to httpPort,
+            POLL_INTERVAL to pollInterval,
+            CONSUMER_GROUPS to targetConsumerGroups
+    )
 
     private fun buildClientProp(): Properties = Properties().apply {
         this[AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG] = kafkaBootstrapServers

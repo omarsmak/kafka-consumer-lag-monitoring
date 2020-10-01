@@ -1,7 +1,6 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.response
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
-import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
 
 /**
  * Interface for [ResponseView] public API
@@ -14,7 +13,7 @@ interface ResponseView {
      * Configure a response view task with instance of [KafkaConsumerLagClientConfig],
      * this will be called upon initializing the client
      */
-    fun configure(kafkaConsumerLagClient: KafkaConsumerLagClient, config: KafkaConsumerLagClientConfig)
+    fun configure(kafkaConsumerLagClient: KafkaConsumerLagClient, config: Map<String, Any>)
 
     /**
      * Execute the output task after the ResponseView being initialized

@@ -3,11 +3,11 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.response
 
 import com.github.ajalt.mordant.TermColors
+import com.omarsmak.kafka.consumer.lag.monitoring.cli.ClientCli
 import com.omarsmak.kafka.consumer.lag.monitoring.cli.Utils
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.client.exceptions.KafkaConsumerLagClientException
-import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
@@ -16,18 +16,18 @@ import kotlin.concurrent.scheduleAtFixedRate
  */
 class ConsoleResponseView : ResponseView {
     private lateinit var kafkaConsumerLagClient: KafkaConsumerLagClient
-    private lateinit var kafkaConsumerLagClientConfig: KafkaConsumerLagClientConfig
+    private lateinit var kafkaConsumerLagClientConfig: Map<String, Any>
     private val termColors = TermColors()
 
-    override fun configure(kafkaConsumerLagClient: KafkaConsumerLagClient, config: KafkaConsumerLagClientConfig) {
+    override fun configure(kafkaConsumerLagClient: KafkaConsumerLagClient, config: Map<String, Any>) {
         this.kafkaConsumerLagClient = kafkaConsumerLagClient
         this.kafkaConsumerLagClientConfig = config
     }
 
     override fun execute() {
-        val targetConsumerGroups: List<String> = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.CONSUMER_GROUPS]
-        val monitoringPollInterval: Long = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.POLL_INTERVAL]
-        val monitoringLagThreshold: Int = kafkaConsumerLagClientConfig[KafkaConsumerLagClientConfig.LAG_THRESHOLD]
+        val targetConsumerGroups: List<String> = kafkaConsumerLagClientConfig[ClientCli.CONSUMER_GROUPS] as List<String>
+        val monitoringPollInterval: Long = kafkaConsumerLagClientConfig[ClientCli.POLL_INTERVAL] as Long
+        val monitoringLagThreshold: Int = kafkaConsumerLagClientConfig[ClientCli.LAG_THRESHOLD] as Int
 
         show(targetConsumerGroups, monitoringPollInterval, monitoringLagThreshold)
     }

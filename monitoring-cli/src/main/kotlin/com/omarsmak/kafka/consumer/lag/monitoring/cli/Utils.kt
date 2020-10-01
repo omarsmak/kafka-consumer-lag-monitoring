@@ -1,7 +1,6 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.cli
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
-import com.omarsmak.kafka.consumer.lag.monitoring.config.KafkaConsumerLagClientConfig
 import com.omarsmak.kafka.consumer.lag.monitoring.response.ResponseView
 import mu.KotlinLogging
 import org.reflections.Reflections
@@ -39,7 +38,7 @@ object Utils {
                 .union(matchedConsumersGroups)
     }
 
-    fun loadResponseViewPlugins(kafkaConsumerLagClient: KafkaConsumerLagClient, kafkaConsumerLagClientConfig: KafkaConsumerLagClientConfig): Set<ResponseView> {
+    fun loadResponseViewPlugins(kafkaConsumerLagClient: KafkaConsumerLagClient, kafkaConsumerLagClientConfig: Map<String, Any>): Set<ResponseView> {
         // The reason for me to use reflection here is that I am planning to add dynamic loading for plugins, meaning that we can
         // add the ability to add plugin through CLASSPATH or perhaps by creating a dedicated plugin folder
         val reflections = Reflections(ResponseView::class.java.`package`.name)
