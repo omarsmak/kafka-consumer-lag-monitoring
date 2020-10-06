@@ -1,0 +1,48 @@
+package com.omarsmak.kafka.consumer.lag.monitoring.component
+
+import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
+
+interface MonitoringComponent {
+    /**
+     * Configure the monitoring component with supplied configs, the configs are only specific for the component with config prefix
+     * e.g: monitoring.lag.datadog.config-1 = test, you will get config-1=test in the Map
+     *
+     * @param configs provided configs for component from [MonitoringEngine]
+     */
+    fun configure(configs: Map<String, Any>)
+
+    /**
+     * Start our monitoring component process, here we can start anything related to our component, e.g: a HTTP server or
+     * a client
+     */
+    fun start()
+
+    /**
+     * Stop our monitoring component process, here you can stop anything that you started with start()
+     */
+    fun stop()
+
+    /**
+     * beforeProcess hook will be called before processing a lag for any consumer
+     */
+    fun beforeProcess()
+
+    /**
+     * process hook will be called upon processing a lag per consumer by providing the following parameters
+     *
+     * @param consumerGroup the processed consumer group name
+     * @param lag the consumer lag per topic of the consumer group
+     * @param memberLag the consumer lag per member per topic of the consumer group
+     */
+    fun process(consumerGroup : String, lag: List<Lag>, memberLag: Map<String, List<Lag>>)
+
+    /**
+     * afterProcess hook will be called after processing all lags for all consumers
+     */
+    fun afterProcess()
+
+    /**
+     * Identifier for the component that can be used to parse the configs automatically by the context
+     */
+    fun identifier(): String
+}

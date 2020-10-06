@@ -1,8 +1,8 @@
-package com.omarsmak.kafka.consumer.lag.monitoring.core
+package com.omarsmak.kafka.consumer.lag.monitoring.engine
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 
-object ContextHelper {
+object MonitoringEngineHelper {
 
     fun getTargetConsumerGroups(client: KafkaConsumerLagClient, configConsumerGroups: List<String>): Set<String> {
         // Get consumer groups from the kafka broker
