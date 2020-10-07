@@ -1,7 +1,7 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.engine
 
-import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.component.MonitoringComponent
+import com.omarsmak.kafka.consumer.lag.monitoring.data.ConsumerGroupLag
 
 class TestMonitoringComponent: MonitoringComponent {
     override fun configure(configs: Map<String, Any>) {
@@ -17,7 +17,7 @@ class TestMonitoringComponent: MonitoringComponent {
     override fun beforeProcess() {
     }
 
-    override fun process(consumerGroup: String, lag: List<Lag>, memberLag: Map<String, List<Lag>>) {
+    override fun process(consumerGroup: String, lag: ConsumerGroupLag) {
         println("$consumerGroup $lag")
     }
 

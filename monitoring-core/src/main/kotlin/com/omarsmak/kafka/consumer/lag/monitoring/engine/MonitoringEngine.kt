@@ -3,11 +3,16 @@ package com.omarsmak.kafka.consumer.lag.monitoring.engine
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClientFactory
 import com.omarsmak.kafka.consumer.lag.monitoring.component.MonitoringComponent
+import com.omarsmak.kafka.consumer.lag.monitoring.data.ConsumerGroupLag
+import com.omarsmak.kafka.consumer.lag.monitoring.support.Utils
+import com.omarsmak.kafka.consumer.lag.monitoring.support.castToLong
 import mu.KotlinLogging
+import java.lang.IllegalArgumentException
+import java.lang.NumberFormatException
 import java.util.Timer
 import kotlin.concurrent.scheduleAtFixedRate
 
-class MonitoringEngine private constructor(monitoringComponent: MonitoringComponent, configs: Map<String, Any>) {
+class MonitoringEngine private constructor(monitoringComponent: MonitoringComponent, configs: Map<String, Any?>) {
 
     companion object {
         private val logger = KotlinLogging.logger {}
@@ -16,16 +21,12 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         const val CONFIG_KAFKA_PREFIX = "kafka"
 
         // default options
-        private const val POLL_INTERVAL_POSTFIX = "poll.interval"
-        private const val DEFAULT_POLL_INTERVAL = 2000
+        const val POLL_INTERVAL = "poll.interval"
+        const val DEFAULT_POLL_INTERVAL = 2000
 
-        private const val CONSUMER_GROUPS_POSTFIX = "consumer.groups"
+        const val CONSUMER_GROUPS = "consumer.groups"
 
-        // exposed options that we expect in the engine
-        const val POLL_INTERVAL = "$CONFIG_LAG_CLIENT_PREFIX.$POLL_INTERVAL_POSTFIX"
-        const val CONSUMER_GROUPS = "$CONFIG_LAG_CLIENT_PREFIX.$CONSUMER_GROUPS_POSTFIX"
-
-        fun createWithComponentAndConfigs(monitoringComponent: MonitoringComponent, configs: Map<String, Any>): MonitoringEngine =
+        fun createWithComponentAndConfigs(monitoringComponent: MonitoringComponent, configs: Map<String, Any?>): MonitoringEngine =
                 MonitoringEngine(monitoringComponent, configs)
     }
 
@@ -43,6 +44,9 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
     }
 
     fun start() {
+        // validate our configs
+        validateComponentConfigs(CONSUMER_GROUPS, String, true)
+
         // start our client
         kafkaConsumerLagClient = KafkaConsumerLagClientFactory.create(kafkaConfigs)
 
@@ -50,13 +54,13 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         monitoringComponent.start()
 
         // start our context and execute our component
-        val monitoringPollInterval = componentConfigs[POLL_INTERVAL_POSTFIX] as Int
+        val monitoringPollInterval = getConfigAsLong(POLL_INTERVAL)
 
         logger.info("Updating metrics every $monitoringPollInterval...")
 
-        Timer().scheduleAtFixedRate(0, monitoringPollInterval.toLong()) {
+        Timer().scheduleAtFixedRate(0, monitoringPollInterval) {
             // get our full target consumer groups, however we do have to check here to make sure we catch any new consumer group
-            val targetConsumerGroups = MonitoringEngineHelper.getTargetConsumerGroups(kafkaConsumerLagClient, initializeConsumerGroups())
+            val targetConsumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initializeConsumerGroups())
 
             // before we process the lag, call our component hook
             monitoringComponent.beforeProcess()
@@ -67,9 +71,10 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
                 val memberLag = kafkaConsumerLagClient.getConsumerMemberLag(it)
 
                 // process our lag per consumer
-                monitoringComponent.process(it, lag, memberLag)
+                monitoringComponent.process(it, ConsumerGroupLag(it, lag, memberLag))
             }
 
+            // after we are done, we call our component hook
             monitoringComponent.afterProcess()
         }
     }
@@ -89,16 +94,45 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         this.monitoringComponent.configure(initializeSpecificComponentConfigs())
     }
 
-    private fun prepareConfigs(configs: Map<String, Any>, prefix: String) = configs
+    private fun prepareConfigs(configs: Map<String, Any?>, prefix: String): Map<String, Any> = configs
             .mapKeys { it.key.toLowerCase().replace("_", ".") }
-            .filter {it.key.startsWith(prefix)}
+            .filter {it.key.startsWith(prefix) && it.value != null}
             .mapKeys { it.key.removePrefix("$prefix.") }
+            .mapValues { it.value as Any }
 
     private fun initializeComponentDefaultConfigs() = mapOf(
-            POLL_INTERVAL_POSTFIX to DEFAULT_POLL_INTERVAL
+            POLL_INTERVAL to DEFAULT_POLL_INTERVAL
     )
 
-    private fun initializeConsumerGroups(): List<String> = (componentConfigs[CONSUMER_GROUPS_POSTFIX] as String).split(",")
+    private fun <T> validateComponentConfigs(key:String, type: T, required: Boolean) {
+        val value:Any? = componentConfigs[key]
+
+        // check if exists
+        if (required && value == null) throw IllegalArgumentException("Missing required configuration '$key' which has no default value.")
+
+        // check type
+        if (type is String) {
+            val valueAsString: String = value as String
+            if (required && valueAsString.isEmpty()) throw IllegalArgumentException("Missing required configuration '$key' which has no default value.")
+        }
+    }
+
+    private fun getConfigAsLong(key: String) = try {
+        componentConfigs.getValue(key).castToLong()
+    } catch (e: NumberFormatException) {
+        throw IllegalArgumentException("The value '" + componentConfigs[key] + "' of key '$key' cannot be converted to long")
+    }
+
+    private fun initializeConsumerGroups(): List<String> {
+        val consumerGroups = componentConfigs[CONSUMER_GROUPS] as String?
+
+        if (consumerGroups.isNullOrEmpty()) {
+            throw IllegalArgumentException("Missing required configuration '$CONSUMER_GROUPS' which has no default value.")
+        }
+
+        return  consumerGroups.split(",")
+    }
+
 
     private fun initializeSpecificComponentConfigs(): Map<String, Any> =
             componentConfigs.filter { it.key.startsWith(monitoringComponent.identifier()) }

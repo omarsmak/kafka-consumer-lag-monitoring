@@ -14,7 +14,9 @@ internal class MonitoringEngineTest {
                 "KAFKA_FETCH_RATE" to "100",
                 "monitoring.lag.consumer.groups" to "test1,test2",
                 "monitoring.lag.datadog.poll.interval" to "300",
-                "monitoring.lag." + monitoringComponent.identifier() +".config" to "test"
+                "monitoring.lag.poll.interval" to null,
+                "monitoring.lag." + monitoringComponent.identifier() +".config" to "test",
+                "nothing" to "nothing"
         )
 
         val context = MonitoringEngine.createWithComponentAndConfigs(TestMonitoringComponent(), configs)
@@ -33,5 +35,11 @@ internal class MonitoringEngineTest {
 
         // assert component config
         assertEquals("test", context.componentConfigs["test.component.config"])
+    }
+
+    @Test
+    fun testWithNonValidConfigs() {
+        val monitoringComponent = TestMonitoringComponent()
+        val monitoringEngine = MonitoringEngine.CONFIG_LAG_CLIENT_PREFIX
     }
 }

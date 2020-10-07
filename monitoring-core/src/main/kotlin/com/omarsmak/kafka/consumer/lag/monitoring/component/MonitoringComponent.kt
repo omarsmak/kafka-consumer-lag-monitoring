@@ -1,6 +1,7 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.component
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
+import com.omarsmak.kafka.consumer.lag.monitoring.data.ConsumerGroupLag
 
 interface MonitoringComponent {
     /**
@@ -32,9 +33,8 @@ interface MonitoringComponent {
      *
      * @param consumerGroup the processed consumer group name
      * @param lag the consumer lag per topic of the consumer group
-     * @param memberLag the consumer lag per member per topic of the consumer group
      */
-    fun process(consumerGroup : String, lag: List<Lag>, memberLag: Map<String, List<Lag>>)
+    fun process(consumerGroup : String, lag: ConsumerGroupLag)
 
     /**
      * afterProcess hook will be called after processing all lags for all consumers
