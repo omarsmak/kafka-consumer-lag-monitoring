@@ -1,5 +1,8 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.support
 
+import java.io.FileNotFoundException
+import java.net.URL
+
 
 fun Any.castToInt(): Int {
     if (this is String) return this.toInt()
@@ -12,3 +15,6 @@ fun Any.castToLong(): Long {
 
     return (this as Number).toLong()
 }
+
+fun String.asResource(): URL =
+        object {}.javaClass.getResource("/$this") ?: throw FileNotFoundException("File '$this' not found..")

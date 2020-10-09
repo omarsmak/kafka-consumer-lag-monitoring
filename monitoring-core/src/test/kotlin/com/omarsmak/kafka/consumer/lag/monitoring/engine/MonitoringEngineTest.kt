@@ -36,10 +36,4 @@ internal class MonitoringEngineTest {
         // assert component config
         assertEquals("test", context.componentConfigs["test.component.config"])
     }
-
-    @Test
-    fun testWithNonValidConfigs() {
-        val monitoringComponent = TestMonitoringComponent()
-        val monitoringEngine = MonitoringEngine.CONFIG_LAG_CLIENT_PREFIX
-    }
 }

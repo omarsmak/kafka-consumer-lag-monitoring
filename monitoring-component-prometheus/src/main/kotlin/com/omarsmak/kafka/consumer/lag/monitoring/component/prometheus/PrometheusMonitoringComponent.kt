@@ -129,6 +129,10 @@ class PrometheusMonitoringComponent : MonitoringComponent{
 
     override fun identifier(): String = "prometheus"
 
+    override fun onError(t: Throwable) {
+        logger.error(t.message, t)
+    }
+
     private fun Gauge.pushKafkaMetricsPerPartition(consumer: String, topicName: String, partition: Int, value: Double) {
         this.labels(
                 consumer,

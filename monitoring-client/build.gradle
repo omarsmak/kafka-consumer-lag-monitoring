@@ -51,7 +51,6 @@ artifacts {
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile "org.apache.kafka:kafka-clients:$kafkaVersion"
-    compile "org.slf4j:slf4j-simple:$slf4jVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "io.mockk:mockk:${mockkVersion}"

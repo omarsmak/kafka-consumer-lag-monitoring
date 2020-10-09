@@ -1,6 +1,5 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.component
 
-import com.omarsmak.kafka.consumer.lag.monitoring.client.data.Lag
 import com.omarsmak.kafka.consumer.lag.monitoring.data.ConsumerGroupLag
 
 interface MonitoringComponent {
@@ -45,4 +44,9 @@ interface MonitoringComponent {
      * Identifier for the component that can be used to parse the configs automatically by the context
      */
     fun identifier(): String
+
+    /**
+     * Error hook to be called on error while the client is polling the data
+     */
+    fun onError(t: Throwable)
 }

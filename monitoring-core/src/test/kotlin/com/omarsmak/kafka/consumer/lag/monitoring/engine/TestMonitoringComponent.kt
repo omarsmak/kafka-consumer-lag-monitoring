@@ -25,4 +25,8 @@ class TestMonitoringComponent: MonitoringComponent {
     }
 
     override fun identifier(): String = "test.component"
+
+    override fun onError(t: Throwable) {
+        println(t)
+    }
 }

@@ -20,7 +20,8 @@ dependencies {
     compile "io.prometheus:simpleclient:$prometheusVersion"
     compile "io.prometheus:simpleclient_hotspot:$prometheusVersion"
     compile "io.prometheus:simpleclient_httpserver:$prometheusVersion"
-    compile "org.slf4j:slf4j-simple:$slf4jVersion"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jSlf4jImplVersion"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.3'
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
