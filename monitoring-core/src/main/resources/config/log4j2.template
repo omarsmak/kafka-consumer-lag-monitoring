@@ -1,0 +1,15 @@
+# Log to console
+appender.console.type = Console
+appender.console.name = LogToConsole
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+
+# Log to console as JSON
+appender.json.type = Console
+appender.json.name = LogInJSON
+appender.json.layout.type = JsonLayout
+appender.json.layout.complete = true
+appender.json.layout.compact = false
+
+rootLogger.level = info
+rootLogger.appenderRef.stdout.ref = LogInJSON
