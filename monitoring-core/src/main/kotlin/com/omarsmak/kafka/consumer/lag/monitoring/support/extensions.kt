@@ -1,6 +1,7 @@
 package com.omarsmak.kafka.consumer.lag.monitoring.support
 
 import java.io.FileNotFoundException
+import java.io.InputStream
 import java.net.URL
 
 
@@ -16,5 +17,5 @@ fun Any.castToLong(): Long {
     return (this as Number).toLong()
 }
 
-fun String.asResource(): URL =
-        object {}.javaClass.getResource("/$this") ?: throw FileNotFoundException("File '$this' not found..")
+fun String.asResource(): InputStream =
+        object {}.javaClass.getResourceAsStream("/$this") ?: throw FileNotFoundException("File '$this' not found..")

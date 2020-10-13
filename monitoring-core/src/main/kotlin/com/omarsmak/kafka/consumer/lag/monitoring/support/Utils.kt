@@ -5,14 +5,12 @@ import com.omarsmak.kafka.consumer.lag.monitoring.engine.MonitoringEngine
 import mu.KotlinLogging
 import org.apache.logging.log4j.core.config.Configurator
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationBuilder
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
+import java.io.*
 import java.util.Properties
 
 object Utils {
 
-    const val DEFAULT_LOGGING_FILE = "log4j2.template"
+    const val DEFAULT_LOGGING_FILE = "config/log4j2.template"
     const val DEFAULT_LOGGING_PREFIX = "${MonitoringEngine.CONFIG_LAG_CLIENT_PREFIX}.logging"
 
     fun getTargetConsumerGroups(client: KafkaConsumerLagClient, configConsumerGroups: List<String>): Set<String> {
@@ -52,6 +50,14 @@ object Utils {
                 .mapKeys { it.key as String }
     }
 
+    fun loadPropertiesFromInputStream(inputStream: InputStream): Properties {
+        val prop = Properties()
+
+        prop.load(inputStream)
+
+        return prop
+    }
+
     fun getConfigsFromPropertiesFileOrFromEnv(arg: Array<String>): Map<String, Any?> {
         // first we try to load the from properties file using provided args
         // if we fail to find something, we use the env variables as fall back
@@ -77,7 +83,7 @@ object Utils {
 
     fun initializeLoggingWithConfigs(configs: Map<String, Any?>, prefix: String = DEFAULT_LOGGING_PREFIX) {
         val userConfigs = getConfigsWithPrefixCaseSensitive(configs, prefix)
-        val defaultLoggingConfig = loadPropertiesFile(DEFAULT_LOGGING_FILE.asResource().path)
+        val defaultLoggingConfig = loadPropertiesFromInputStream(DEFAULT_LOGGING_FILE.asResource())
 
         defaultLoggingConfig.putAll(userConfigs)
 

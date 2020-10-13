@@ -1,8 +1,13 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
+    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'application'
+
+mainClassName = 'com.omarsmak.kafka.consumer.lag.monitoring.component.prometheus.MainKt'
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -30,4 +35,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    zip64 = true
+}
+
+jar {
+    manifest {
+        attributes(
+                "Multi-Release": true
+        )
+    }
 }
