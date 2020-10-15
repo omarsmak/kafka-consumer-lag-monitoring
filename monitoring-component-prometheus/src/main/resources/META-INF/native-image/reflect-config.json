@@ -1,0 +1,850 @@
+[
+{
+  "name":"com.fasterxml.jackson.core.JsonParser"
+},
+{
+  "name":"com.fasterxml.jackson.databind.JsonNode"
+},
+{
+  "name":"com.fasterxml.jackson.databind.ObjectMapper"
+},
+{
+  "name":"com.fasterxml.jackson.databind.deser.Deserializers[]"
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.fasterxml.jackson.databind.ser.Serializers[]"
+},
+{
+  "name":"com.oracle.truffle.api.LanguageAccessor$LanguageImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.TruffleLanguage"
+},
+{
+  "name":"com.oracle.truffle.api.debug.impl.DebuggerInstrumentProvider",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.frame.FrameAccessor$FramesImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.instrumentation.InstrumentAccessor$InstrumentImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.instrumentation.InstrumentationHandler"
+},
+{
+  "name":"com.oracle.truffle.api.instrumentation.TruffleInstrument"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultBooleanExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultByteExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultCharacterExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultDoubleExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultFloatExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultIntegerExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultLongExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultShortExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.DefaultStringExportsGen"
+},
+{
+  "name":"com.oracle.truffle.api.interop.InteropAccessor$InteropImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.interop.InteropLibrary"
+},
+{
+  "name":"com.oracle.truffle.api.interop.InteropLibraryGen"
+},
+{
+  "name":"com.oracle.truffle.api.io.IOAccessor$IOSupportImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.library.DefaultExportProvider"
+},
+{
+  "name":"com.oracle.truffle.api.library.DynamicDispatchLibrary"
+},
+{
+  "name":"com.oracle.truffle.api.library.DynamicDispatchLibraryGen"
+},
+{
+  "name":"com.oracle.truffle.api.nodes.NodeAccessor$AccessNodes",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.api.source.SourceAccessor$SourceSupportImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.oracle.truffle.polyglot.EngineAccessor$EngineImpl",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.sun.management.GarbageCollectorMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"com.sun.management.GcInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"com.sun.management.HotSpotDiagnosticMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"com.sun.management.ThreadMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"com.sun.management.UnixOperatingSystemMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"com.sun.management.VMOption",
+  "allPublicMethods":true
+},
+{
+  "name":"com.sun.management.internal.GarbageCollectorExtImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.HotSpotDiagnostic",
+  "allPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.HotSpotThreadImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"com.sun.management.internal.OperatingSystemImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"io.prometheus.client.Striped64",
+  "fields":[
+    {"name":"base", "allowUnsafeAccess":true}, 
+    {"name":"busy", "allowUnsafeAccess":true}
+  ]
+},
+{
+  "name":"java.io.ObjectInputStream",
+  "allPublicMethods":true
+},
+{
+  "name":"java.io.Serializable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Boolean",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Byte",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Character",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Comparable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Double",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Float",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Integer",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Iterable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.lang.Long",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.Object",
+  "allDeclaredFields":true
+},
+{
+  "name":"java.lang.Short",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.StackTraceElement",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"java.lang.StackTraceElement[]"
+},
+{
+  "name":"java.lang.String"
+},
+{
+  "name":"java.lang.String[]"
+},
+{
+  "name":"java.lang.Void",
+  "fields":[{"name":"TYPE"}]
+},
+{
+  "name":"java.lang.management.BufferPoolMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.ClassLoadingMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.CompilationMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.LockInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.ManagementPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String"] }]
+},
+{
+  "name":"java.lang.management.MemoryMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryManagerMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryPoolMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.MemoryUsage",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.MonitorInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.PlatformLoggingMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.RuntimeMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.management.ThreadInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"java.math.BigDecimal"
+},
+{
+  "name":"java.math.BigInteger"
+},
+{
+  "name":"java.util.AbstractCollection",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.Collection",
+  "allDeclaredMethods":true
+},
+{
+  "name":"java.util.Date"
+},
+{
+  "name":"java.util.PropertyPermission",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
+},
+{
+  "name":"java.util.logging.LogManager",
+  "methods":[{"name":"getLoggingMXBean","parameterTypes":[] }]
+},
+{
+  "name":"java.util.logging.LoggingMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"javax.management.MBeanOperationInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"javax.management.MBeanServerBuilder",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.NotificationBroadcasterSupport",
+  "methods":[{"name":"getNotificationInfo","parameterTypes":[] }]
+},
+{
+  "name":"javax.management.ObjectName"
+},
+{
+  "name":"javax.management.openmbean.CompositeData"
+},
+{
+  "name":"javax.management.openmbean.CompositeData[]"
+},
+{
+  "name":"javax.management.openmbean.TabularData"
+},
+{
+  "name":"jdk.management.jfr.ConfigurationInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.EventTypeInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.FlightRecorderMXBean",
+  "allPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.FlightRecorderMXBeanImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"jdk.management.jfr.RecordingInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"jdk.management.jfr.SettingDescriptorInfo",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.kafka.clients.consumer.RangeAssignor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.kafka.common.serialization.StringDeserializer"
+},
+{
+  "name":"org.apache.kafka.common.utils.AppInfoParser$AppInfo",
+  "allPublicConstructors":true
+},
+{
+  "name":"org.apache.kafka.common.utils.AppInfoParser$AppInfoMBean",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.Level",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.ThreadContext$ContextStack",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.ThreadContext$EmptyThreadContextStack",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.Appender[]"
+},
+{
+  "name":"org.apache.logging.log4j.core.LogEvent",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.AbstractAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.ConsoleAppender",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.appender.ConsoleAppender$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.config.AppenderRef",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.config.AppenderRef[]"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.AppendersPlugin",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.config.LoggerConfig$RootLogger",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.config.LoggerConfig[]"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.LoggersPlugin",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.config.Property[]"
+},
+{
+  "name":"org.apache.logging.log4j.core.config.json.JsonConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BigDecimalConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BigIntegerConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$BooleanConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ByteArrayConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ByteConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharArrayConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharacterConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CharsetConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ClassConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$CronExpressionConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$DoubleConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$DurationConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$FileConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$FloatConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$InetAddressConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$IntegerConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$LevelConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$LongConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$PathConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$PatternConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$SecurityProviderConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$ShortConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$StringConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UriConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UrlConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.convert.TypeConverters$UuidConverter",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.validation.validators.RequiredValidator",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginAttributeVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginBuilderAttributeVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginConfigurationVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.plugins.visitors.PluginElementVisitor",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.properties.PropertiesConfiguration",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.logging.log4j.core.LoggerContext","org.apache.logging.log4j.core.config.ConfigurationSource","org.apache.logging.log4j.core.config.builder.api.Component"] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.filter.AbstractFilterable$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.impl.Log4jContextFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.impl.Log4jLogEvent",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jackson.ContextDataSerializer",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.jackson.InstantMixIn",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jackson.LevelMixIn",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jackson.LogEventJsonMixIn",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jackson.StackTraceElementMixIn",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.AppenderAdmin",
+  "allPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.AppenderAdminMBean",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.ContextSelectorAdmin",
+  "allPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.ContextSelectorAdminMBean",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerConfigAdmin",
+  "allPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerConfigAdminMBean",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerContextAdmin",
+  "allPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.StatusLoggerAdmin",
+  "allPublicConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.jmx.StatusLoggerAdminMBean",
+  "allPublicMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.AbstractJacksonLayout$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.AbstractLayout$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.AbstractStringLayout$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.JsonLayout",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.JsonLayout$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.PatternLayout",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.layout.PatternLayout$Builder",
+  "allDeclaredFields":true
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.ContextMapLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.DateLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.EnvironmentLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.EventLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.JavaLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.JndiLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.Log4jLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.LowerLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.MainMapLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.MapLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.MarkerLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.ResourceBundleLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.StructuredDataLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.SystemPropertiesLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.lookup.UpperLookup",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.DatePatternConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LevelPatternConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.LoggerPatternConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.MessagePatternConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.time.Instant",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.core.time.MutableInstant",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.logging.log4j.core.util.ExecutorServices"
+},
+{
+  "name":"org.apache.logging.log4j.core.util.KeyValuePair[]"
+},
+{
+  "name":"org.apache.logging.log4j.message.DefaultFlowMessageFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.message.ReusableMessageFactory",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.logging.log4j.spi.ThreadContextStack",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.util.StringBuilderFormattable",
+  "allDeclaredMethods":true
+},
+{
+  "name":"org.apache.logging.log4j.util.internal.DefaultObjectInputFilter",
+  "allPublicMethods":true
+},
+{
+  "name":"sun.management.ClassLoadingImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.CompilationImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.ManagementFactoryHelper$1",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.ManagementFactoryHelper$PlatformLoggingImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryManagerImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.MemoryPoolImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.management.RuntimeImpl",
+  "allPublicConstructors":true
+},
+{
+  "name":"sun.misc.Unsafe",
+  "allDeclaredFields":true
+}
+]

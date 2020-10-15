@@ -81,7 +81,11 @@ object Utils {
             .mapKeys { it.key.replace("$prefix.", "", true) }
             .mapValues { it.value as Any }
 
-    fun initializeLoggingWithConfigs(configs: Map<String, Any?>, prefix: String = DEFAULT_LOGGING_PREFIX) {
+    /**
+     * The will initialize log4j configs, however if you wish to use this, you will need to make sure that you have
+     * log4j-slf4j-impl in the class path
+     */
+    fun initializeLog4jLoggingWithConfigs(configs: Map<String, Any?>, prefix: String = DEFAULT_LOGGING_PREFIX) {
         val userConfigs = getConfigsWithPrefixCaseSensitive(configs, prefix)
         val defaultLoggingConfig = loadPropertiesFromInputStream(DEFAULT_LOGGING_FILE.asResource())
 

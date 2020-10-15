@@ -9,7 +9,7 @@ fun main(arg: Array<String>) {
     val configs = Utils.getConfigsFromPropertiesFileOrFromEnv(arg)
 
     // start our logging service
-    Utils.initializeLoggingWithConfigs(configs)
+    Utils.initializeLog4jLoggingWithConfigs(configs)
 
     val component = PrometheusMonitoringComponent()
     val engine = MonitoringEngine.createWithComponentAndConfigs(component, configs)
