@@ -1,7 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
-    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
-    id 'com.google.cloud.tools.jib' version "${jibPluginVersion}"
+    id 'com.github.johnrengelman.shadow'
 }
 
 apply plugin: 'kotlin'
@@ -48,25 +47,4 @@ test {
 
 shadowJar {
     zip64 = true
-}
-
-jib {
-    from.image 'gcr.io/distroless/java:11'
-    to{
-        image = "omarsmak" + "/" + libraryName
-        tags = [libraryVersion, "latest"]
-        auth {
-            username = System.getenv('DOCKERHUB_USER')
-            password = System.getenv('DOCKERHUB_PASSWORD')
-        }
-    }
-    container {
-        ports = ["9739"]
-        jvmFlags = [
-                "-XX:+UseCompressedOops",
-                "-XX:MaxRAMPercentage=80",
-                "-Dfile.encoding=UTF-8",
-                "-Djava.security.egd=file:/dev/./urandom"
-        ]
-    }
 }

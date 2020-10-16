@@ -1,102 +1,18 @@
-plugins {
-    id 'org.jetbrains.kotlin.jvm'
-    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
-    id "com.palantir.graal" version "${palantirGraalNativeVersion}"
-    id 'com.bmuschko.docker-remote-api' version "${bmuschkoDockerPluginVersion}"
-}
-
-apply plugin: 'kotlin'
 apply plugin: 'application'
 
 mainClassName = 'com.omarsmak.kafka.consumer.lag.monitoring.component.prometheus.MainKt'
 
 ext {
-    componentName = libraryName + "-" + "prometheus"
-    componentNameWithVersion = componentName + "-" + version
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    componentName = "prometheus"
+    dockerExposedPort = 9739
 }
 
 dependencies {
     compile project(':monitoring-core')
 
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    compile "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
     compile "io.prometheus:simpleclient:$prometheusVersion"
     compile "io.prometheus:simpleclient_hotspot:$prometheusVersion"
     compile "io.prometheus:simpleclient_httpserver:$prometheusVersion"
     compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jSlf4jImplVersion"
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
-
-    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-}
-
-test {
-    useJUnitPlatform()
-}
-
-shadowJar {
-    zip64 = true
-    archiveBaseName.set(componentName)
-}
-
-jar {
-    manifest {
-        attributes(
-                "Multi-Release": true
-        )
-    }
-}
-
-graal {
-    graalVersion graalNativeImageVersion
-    outputName componentNameWithVersion
-    mainClass mainClassName
-    javaVersion '11'
-    option '--no-fallback'
-    option '--report-unsupported-elements-at-runtime'
-    option '--allow-incomplete-classpath'
-}
-
-import com.bmuschko.gradle.docker.tasks.image.Dockerfile
-
-task createDockerfile(type: Dockerfile) {
-    // First stage: build our native image inside a docker image
-    from new Dockerfile.From("oracle/graalvm-ce:${graalNativeImageVersion}-java11").withStage("builder")
-    workingDir "/app"
-    copyFile "build/libs/kafka-consumer-lag-monitoring-prometheus*all.jar", "/app/jar/application.jar"
-    runCommand "gu install native-image"
-    runCommand "native-image -jar jar/application.jar --no-fallback --report-unsupported-elements-at-runtime --allow-incomplete-classpath"
-
-    // Second stage: Create our application docker image
-    from "registry.access.redhat.com/ubi8/ubi-minimal"
-    workingDir "/work/"
-    copyFile new Dockerfile.CopyFile("/app/application", "/work/application").withStage("builder")
-
-    runCommand "chmod 775 /work /work/application \\\n" +
-            "  && chown -R 1001 /work \\\n" +
-            "  && chmod -R \"g+rwX\" /work \\\n" +
-            "  && chown -R 1001:root /work"
-
-    exposePort 9739
-    user "1001"
-
-    defaultCommand("./application")
-}
-
-task debug() {
-    dependsOn createDockerfile
-    doLast {
-        createDockerfile.getInstructions().get().each {
-            println(it.text)
-        }
-    }
 }

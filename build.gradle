@@ -10,14 +10,22 @@ buildscript {
 }
 
 plugins {
-    id 'com.palantir.git-version' version "${palantirGitVersion}"
+    id "com.adarshr.test-logger" version "${testLoggerPluginVersion}" apply false
+    id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}" apply false
+    id "com.palantir.graal" version "${palantirGraalNativeVersion}" apply false
+    id 'com.bmuschko.docker-remote-api' version "${bmuschkoDockerPluginVersion}" apply false
+    id 'com.google.cloud.tools.jib' version "${jibPluginVersion}" apply false
 }
 
 apply plugin: 'idea'
 
 subprojects {
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'com.adarshr.test-logger'
+    apply plugin: 'kotlin'
+
     group = "com.omarsmak.kafka.consumer.lag.monitoring"
-    version = gitVersion()
+    version = '0.1.0-SNAPSHOT'
 
     ext {
         libraryName = "kafka-consumer-lag-monitoring"
@@ -29,6 +37,161 @@ subprojects {
             downloadJavadoc = true
             downloadSources = true
         }
+    }
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    dependencies {
+        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        compile "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
+
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+        testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+    }
+}
+
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerTagImage
+
+// these tasks only applicable for any component
+configure(subprojects.findAll { it.name.contains("component") }) {
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'com.palantir.graal'
+    apply plugin: 'com.bmuschko.docker-remote-api'
+    apply plugin: 'com.google.cloud.tools.jib'
+
+    afterEvaluate {
+        ext {
+            componentFullName = libraryName + "-" + project.componentName
+            componentFullNameWithVersion = componentFullName + "-" + version
+            componentDockerName = "omarsmak/" + componentFullName
+            componentDockerNativeName = componentDockerName + "-native"
+         }
+
+        shadowJar {
+            zip64 = true
+            archiveBaseName.set(componentFullName)
+        }
+
+        jar {
+            manifest {
+                attributes(
+                        "Multi-Release": true
+                )
+            }
+        }
+
+        graal {
+            graalVersion graalNativeImageVersion
+            outputName componentFullNameWithVersion
+            mainClass project.mainClassName
+            javaVersion '11'
+            option '--no-fallback'
+            option '--report-unsupported-elements-at-runtime'
+            option '--allow-incomplete-classpath'
+        }
+
+        jib {
+            from.image 'gcr.io/distroless/java:11'
+            to{
+                image = componentDockerName
+                tags = [libraryVersion, "latest"]
+                auth {
+                    username = System.getenv('DOCKERHUB_USER')
+                    password = System.getenv('DOCKERHUB_PASSWORD')
+                }
+            }
+            container {
+                if (dockerExposedPort) {
+                    ports = [dockerExposedPort.toString()]
+                }
+
+                jvmFlags = [
+                        "-XX:+UseCompressedOops",
+                        "-XX:MaxRAMPercentage=80",
+                        "-Dfile.encoding=UTF-8",
+                        "-Djava.security.egd=file:/dev/./urandom"
+                ]
+            }
+        }
+
+        task createNativeDockerfile(type: Dockerfile) {
+
+            // First stage: build our native image inside a docker image
+
+            from new Dockerfile.From("oracle/graalvm-ce:${graalNativeImageVersion}-java11").withStage("build")
+            workingDir "/app"
+            copyFile componentFullName + "*all.jar", "/app/jar/application.jar"
+            runCommand "gu install native-image"
+            runCommand "native-image -jar jar/application.jar --no-fallback --report-unsupported-elements-at-runtime --allow-incomplete-classpath"
+
+            // Second stage: Create our application docker image
+            from "frolvlad/alpine-glibc"
+            runCommand "apk update && apk add libstdc++"
+            workingDir "/work/"
+            copyFile new Dockerfile.CopyFile("/app/application", "/work/application").withStage("build")
+
+            if (project.dockerExposedPort) {
+                exposePort project.dockerExposedPort
+            }
+
+            entryPoint("./application")
+        }
+
+        task copyShadowJarToDockerContext(type: Copy) {
+            dependsOn shadowJar
+
+            from "$buildDir/libs"
+            include componentFullName + "*all.jar"
+            into "$buildDir/docker"
+        }
+
+        task buildNativeImageWithLatestTag(type: DockerBuildImage) {
+            dependsOn copyShadowJarToDockerContext, createNativeDockerfile
+
+            remove = true
+            noCache = false
+            images.add(componentDockerNativeName + ":latest")
+        }
+
+        /**
+         * Build a Docker image with native application
+         */
+        task buildNativeDockerImage(type: DockerTagImage) {
+            dependsOn buildNativeImageWithLatestTag
+
+            repository = componentDockerNativeName
+            tag = version
+            targetImageId buildNativeImageWithLatestTag.getImageId()
+        }
+
+        /**
+         * Create a native application using Graal Native Image
+         */
+        task createNativeImage() {
+            dependsOn nativeImage
+        }
+
+        /**
+         * Build a Docker image with jar application
+         */
+        task buildDockerImage {
+            dependsOn jibDockerBuild
+        }
+
     }
 }
 
