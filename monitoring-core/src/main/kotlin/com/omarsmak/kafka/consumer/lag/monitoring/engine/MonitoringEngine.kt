@@ -35,6 +35,8 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
     val kafkaConfigs: Map<String, Any>
     val componentConfigs: Map<String, Any>
 
+    private var trackedConsumerGroups: Set<String> = emptySet()
+
     private lateinit var monitoringComponent: MonitoringComponent
     private lateinit var kafkaConsumerLagClient: KafkaConsumerLagClient
 
@@ -67,13 +69,26 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         timer.scheduleAtFixedRate(0, monitoringPollInterval) {
             try {
                 // get our full target consumer groups, however we do have to check here to make sure we catch any new consumer group
-                val targetConsumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initializeConsumerGroups())
+                val consumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initializeConsumerGroups())
+                val diffConsumerGroups = Utils.updateAndTrackConsumerGroups(trackedConsumerGroups, consumerGroups, false)
+                trackedConsumerGroups = diffConsumerGroups.updatedConsumerGroups
+
+                logger.debug("Monitoring consumer groups: '$trackedConsumerGroups'")
+
+                // we log these info
+                if (diffConsumerGroups.newGroups.isNotEmpty()) {
+                    logger.info("New consumer groups joined the client: '${diffConsumerGroups.newGroups}'")
+                }
+
+                if (diffConsumerGroups.removedGroups.isNotEmpty()) {
+                    logger.info("Some consumer groups left the client: '${diffConsumerGroups.removedGroups}'")
+                }
 
                 // before we process the lag, call our component hook
                 monitoringComponent.beforeProcess()
 
                 // process our lag per consumer group
-                targetConsumerGroups.forEach {
+                trackedConsumerGroups.forEach {
                     logger.debug("Polling lags for consumer '$it'...")
 
                     val lag = kafkaConsumerLagClient.getConsumerLag(it)

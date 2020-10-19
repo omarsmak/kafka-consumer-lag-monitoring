@@ -2,6 +2,7 @@ package com.omarsmak.kafka.consumer.lag.monitoring.support
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.engine.MonitoringEngine
+import mu.KLogger
 import mu.KotlinLogging
 import org.apache.logging.log4j.core.config.Configurator
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationBuilder
@@ -77,7 +78,7 @@ object Utils {
     }
 
     private fun getConfigsWithPrefix(configs: Map<String, Any?>, prefix: String): Map<String, Any> = configs
-            .filter {it.key.startsWith(prefix, true) && it.value != null}
+            .filter { it.key.startsWith(prefix, true) && it.value != null }
             .mapKeys { it.key.replace("$prefix.", "", true) }
             .mapValues { it.value as Any }
 
@@ -95,6 +96,30 @@ object Utils {
 
         Configurator.initialize(PropertiesConfigurationBuilder().setRootProperties(defaultLoggingConfig).build())
 
-        KotlinLogging.logger{}.info("Logging Configs: $defaultLoggingConfigAsMap")
+        KotlinLogging.logger {}.info("Logging Configs: $defaultLoggingConfigAsMap")
     }
+
+    fun updateAndTrackConsumerGroups(trackedConsumerGroups: Set<String>, sourceConsumerGroups: Set<String>, keepGroups: Boolean = true): DiffConsumerGroups {
+        // first check if we have new consumer groups
+        val newGroups = sourceConsumerGroups.minus(trackedConsumerGroups)
+
+        // second check if we have removed groups
+        val removedGroups = trackedConsumerGroups.minus(sourceConsumerGroups)
+
+        // update our trackedConsumerGroups
+        if (keepGroups) {
+            return DiffConsumerGroups(newGroups, removedGroups, trackedConsumerGroups
+                    .plus(newGroups))
+        }
+
+        // update our trackedConsumerGroups
+        return DiffConsumerGroups(newGroups, removedGroups, trackedConsumerGroups
+                .plus(newGroups).minus(removedGroups))
+    }
+
+    data class DiffConsumerGroups(
+            val newGroups: Set<String>,
+            val removedGroups: Set<String>,
+            val updatedConsumerGroups: Set<String>
+    )
 }

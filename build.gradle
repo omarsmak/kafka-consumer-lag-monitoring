@@ -159,7 +159,7 @@ configure(subprojects.findAll { it.name.contains("component") }) {
             into "$buildDir/docker"
         }
 
-        task buildNativeImageWithLatestTag(type: DockerBuildImage) {
+        task buildNativeDockerImageWithLatestTag(type: DockerBuildImage) {
             dependsOn copyShadowJarToDockerContext, createNativeDockerfile
 
             remove = true
@@ -171,11 +171,11 @@ configure(subprojects.findAll { it.name.contains("component") }) {
          * Build a Docker image with native application
          */
         task buildNativeDockerImage(type: DockerTagImage) {
-            dependsOn buildNativeImageWithLatestTag
+            dependsOn buildNativeDockerImageWithLatestTag
 
             repository = componentDockerNativeName
             tag = version
-            targetImageId buildNativeImageWithLatestTag.getImageId()
+            targetImageId buildNativeDockerImageWithLatestTag.getImageId()
         }
 
         /**
