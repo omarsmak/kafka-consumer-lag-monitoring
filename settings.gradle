@@ -1,6 +1,6 @@
 rootProject.name = "kafka-consumer-lag-monitoring"
 
 include 'monitoring-client'
-include 'monitoring-cli'
 include 'monitoring-core'
 include 'monitoring-component-prometheus'
+include 'monitoring-component-console'

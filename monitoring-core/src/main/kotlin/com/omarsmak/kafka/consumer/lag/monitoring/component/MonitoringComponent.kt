@@ -31,9 +31,9 @@ interface MonitoringComponent {
      * process hook will be called upon processing a lag per consumer by providing the following parameters
      *
      * @param consumerGroup the processed consumer group name
-     * @param lag the consumer lag per topic of the consumer group
+     * @param consumerGroupLag the consumer lag per topic of the consumer group
      */
-    fun process(consumerGroup : String, lag: ConsumerGroupLag)
+    fun process(consumerGroup : String, consumerGroupLag: ConsumerGroupLag)
 
     /**
      * afterProcess hook will be called after processing all lags for all consumers

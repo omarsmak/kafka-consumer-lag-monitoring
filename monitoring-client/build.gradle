@@ -1,10 +1,7 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
     id "com.jfrog.bintray" version "${jfrogBintrayVersion}"
 }
-
-apply plugin: 'kotlin'
 
 ext {
     bintrayRepo = "kafka"
@@ -24,20 +21,13 @@ ext {
     libraryLicences = ['MIT']
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 task sourceJar(type: Jar) {
     classifier "sources"
     from sourceSets.main.allSource
 }
 
 javadoc.failOnError = false
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
@@ -49,17 +39,12 @@ artifacts {
 }
 
 dependencies {
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile "org.apache.kafka:kafka-clients:$kafkaVersion"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testImplementation "io.mockk:mockk:${mockkVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
-}
-
-test {
-    useJUnitPlatform()
 }
 
 bintray {

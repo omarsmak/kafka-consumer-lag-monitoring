@@ -17,8 +17,8 @@ class TestMonitoringComponent: MonitoringComponent {
     override fun beforeProcess() {
     }
 
-    override fun process(consumerGroup: String, lag: ConsumerGroupLag) {
-        println("$consumerGroup $lag")
+    override fun process(consumerGroup: String, consumerGroupLag: ConsumerGroupLag) {
+        println("$consumerGroup $consumerGroupLag")
     }
 
     override fun afterProcess() {

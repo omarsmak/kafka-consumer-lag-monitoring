@@ -1,6 +1,5 @@
 buildscript {
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:${jfrogBuildExtractorVersion}")
     }
     repositories {
@@ -10,6 +9,7 @@ buildscript {
 }
 
 plugins {
+    id "org.jetbrains.kotlin.jvm" version "${kotlinVersion}"
     id "com.adarshr.test-logger" version "${testLoggerPluginVersion}" apply false
     id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}" apply false
     id "com.palantir.graal" version "${palantirGraalNativeVersion}" apply false
@@ -20,7 +20,6 @@ plugins {
 apply plugin: 'idea'
 
 subprojects {
-    apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'kotlin'
 
@@ -52,7 +51,6 @@ subprojects {
     }
 
     dependencies {
-        compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         compile "io.github.microutils:kotlin-logging:$kotlinLoggingVersion"
 
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
@@ -170,7 +168,7 @@ configure(subprojects.findAll { it.name.contains("component") }) {
         /**
          * Build a Docker image with native application
          */
-        task buildNativeDockerImage(type: DockerTagImage) {
+        task buildNativeApplicationDockerImage(type: DockerTagImage) {
             dependsOn buildNativeDockerImageWithLatestTag
 
             repository = componentDockerNativeName
@@ -181,7 +179,7 @@ configure(subprojects.findAll { it.name.contains("component") }) {
         /**
          * Create a native application using Graal Native Image
          */
-        task createNativeImage() {
+        task buildNativeApplication() {
             dependsOn nativeImage
         }
 

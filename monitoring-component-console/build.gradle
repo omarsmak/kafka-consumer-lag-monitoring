@@ -1,0 +1,42 @@
+apply plugin: 'application'
+apply plugin: 'kotlin-kapt'
+
+mainClassName = 'com.omarsmak.kafka.consumer.lag.monitoring.component.console.MainKt'
+
+
+ext {
+    componentName = "console"
+    dockerExposedPort = 8080
+}
+
+dependencies {
+    compile project(':monitoring-core')
+
+    compile "com.github.ajalt:mordant:$mordantVersion"
+    compile "info.picocli:picocli:$picocliVersion"
+    compile "org.slf4j:slf4j-simple:$slf4jVersion"
+
+    kapt "info.picocli:picocli-codegen:$picocliVersion"
+}
+
+kapt {
+    arguments {
+        arg("project", "${project.group}/${project.name}")
+    }
+}
+
+
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/application-meta.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p['name'] = componentFullName
+            p.store w, null
+        }
+    }
+}
+
+classes {
+    dependsOn createProperties
+}
