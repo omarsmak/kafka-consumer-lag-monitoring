@@ -63,6 +63,7 @@ subprojects {
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerTagImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 
 // these tasks only applicable for any component
 configure(subprojects.findAll { it.name.contains("component") }) {
@@ -100,6 +101,14 @@ configure(subprojects.findAll { it.name.contains("component") }) {
             option '--no-fallback'
             option '--report-unsupported-elements-at-runtime'
             option '--allow-incomplete-classpath'
+        }
+
+        docker {
+            registryCredentials {
+                username = System.getenv('DOCKERHUB_USER')
+                password = System.getenv('DOCKERHUB_PASSWORD')
+                email = 'omarsmak@gmail.com'
+            }
         }
 
         jib {
@@ -157,27 +166,29 @@ configure(subprojects.findAll { it.name.contains("component") }) {
             into "$buildDir/docker"
         }
 
-        task buildNativeDockerImageWithLatestTag(type: DockerBuildImage) {
+        /**
+         * Build a Docker image with native application
+         */
+        task buildNativeApplicationDockerImage(type: DockerBuildImage) {
             dependsOn copyShadowJarToDockerContext, createNativeDockerfile
 
             remove = true
             noCache = false
             images.add(componentDockerNativeName + ":latest")
+            images.add(componentDockerNativeName + ":$version")
         }
 
         /**
-         * Build a Docker image with native application
+         * Build and push a Docker image with native application
          */
-        task buildNativeApplicationDockerImage(type: DockerTagImage) {
-            dependsOn buildNativeDockerImageWithLatestTag
+        task buildAndPushNativeApplicationDockerImage(type: DockerPushImage) {
+            dependsOn buildNativeApplicationDockerImage
 
-            repository = componentDockerNativeName
-            tag = version
-            targetImageId buildNativeDockerImageWithLatestTag.getImageId()
+            images.set(buildNativeApplicationDockerImage.images)
         }
 
         /**
-         * Create a native application using Graal Native Image
+         * Build a native application using Graal Native Image
          */
         task buildNativeApplication() {
             dependsOn nativeImage
@@ -188,6 +199,13 @@ configure(subprojects.findAll { it.name.contains("component") }) {
          */
         task buildDockerImage {
             dependsOn jibDockerBuild
+        }
+
+        /**
+         * Build and push a Docker image with jar application
+         */
+        task buildAndPushDockerImage {
+            dependsOn jib
         }
 
     }
