@@ -7,12 +7,10 @@ jobs:
         - openjdk11
       script: ./gradlew clean test
 
-    - stage: "Deploy"
+    - stage: "Deploy Jar and Native Linux application and Docker"
       os:
         - linux
-        - osx
       language: java
-      osx_image: xcode9.4
       jdk:
         - openjdk11
       script: ./gradlew clean shadowJar buildNativeApplication
@@ -24,3 +22,41 @@ jobs:
           file:
             - "*/build/libs/kafka-consumer-lag-monitoring-*.jar"
             - "*/build/dist/kafka-consumer-lag-monitoring-*.tar.gz"
+          on:
+            tags: true
+
+        - provider: script
+          script: ./gradlew clean bintrayUpload -x test
+          skip_cleanup: true
+          on:
+            tags: true
+
+        - provider: script
+          script: ./gradlew jib
+          skip_cleanup: true
+          on:
+            tags: true
+
+        - provider: script
+          script: ./gradlew buildAndPushNativeApplicationDockerImage
+          skip_cleanup: true
+          on:
+            tags: true
+
+
+    - stage: "Deploy Native Mac application"
+      os: osx
+      osx_image: xcode9.4
+      language: java
+      jdk:
+        - openjdk11
+      script: ./gradlew clean buildNativeApplication
+      deploy:
+        - provider: releases
+          api_key: $GITHUB_KEY
+          file_glob: true
+          skip_cleanup: true
+          file:
+              - "*/build/dist/kafka-consumer-lag-monitoring-*.tar.gz"
+          on:
+            tags: true
