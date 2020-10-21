@@ -27,7 +27,7 @@ jobs:
             tags: true
 
         - provider: script
-          script: ./gradlew clean bintrayUpload -x test
+          script: ./gradlew clean bintrayUpload -x test -p monitoring-client
           skip_cleanup: true
           on:
             tags: true
