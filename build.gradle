@@ -207,7 +207,6 @@ configure(subprojects.findAll { it.name.contains("component") }) {
         task buildAndPushDockerImage {
             dependsOn jib
         }
-
     }
 }
 
