@@ -190,8 +190,26 @@ configure(subprojects.findAll { it.name.contains("component") }) {
         /**
          * Build a native application using Graal Native Image
          */
-        task buildNativeApplication() {
+        task buildNativeApplication(type: Tar) {
             dependsOn nativeImage
+
+            OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem;
+
+            def osName = "generic"
+
+            if (os.linux) {
+                osName = "linux"
+            } else if (os.macOsX) {
+                osName = "mac"
+            } else if (os.windows) {
+                osName = "windows"
+            }
+
+            archiveFileName = "$componentFullNameWithVersion-${osName}.tar.gz"
+            destinationDirectory = file("$buildDir/dist")
+            compression = Compression.GZIP
+
+            from "$buildDir/graal/$componentFullNameWithVersion"
         }
 
         /**
