@@ -1,10 +1,10 @@
-Kafka Consumer Lag Monitoring
+Kafka Consumer Lag Monitoring - Lightweight and Cloud Native Ready
 ====
 [![Build Status](https://travis-ci.com/omarsmak/kafka-consumer-lag-monitoring.svg?token=ACVRSYGMw5EM3tmwPiBz&branch=master)](https://travis-ci.com/omarsmak/kafka-consumer-lag-monitoring)
 [ ![Download](https://api.bintray.com/packages/omarsmak/kafka/consumer-lag-monitoring/images/download.svg) ](https://bintray.com/omarsmak/kafka/consumer-lag-monitoring/_latestVersion)
 
 
-A client tool that exports the consumer lag of a Kafka consumer group to different output implementations such as Prometheus or your terminal. It utlizes Kafka's AdminClient and Kafka's Consumer's client in order to fetch such 
+A client tool that exports the consumer lag of a Kafka consumer group to different implementations such as Prometheus or your terminal. It utlizes Kafka's AdminClient and Kafka's Consumer's client in order to fetch such 
 metrics.
 Consumer lag calculated as follows:
     
@@ -18,8 +18,8 @@ Quoting this [article](https://sematext.com/blog/kafka-consumer-lag-offsets-moni
 > Why is Consumer Lag Important? Many applications today are based on being able to process (near) real-time data. Think about performance monitoring system like Sematext Monitoring or log management service like Sematext Logs. They continuously process infinite streams of near real-time data. If they were to show you metrics or logs with too much delay – if the Consumer Lag were too big – they’d be nearly useless.  This Consumer Lag tells us how far behind each Consumer (Group) is in each Partition.  **The smaller the lag the more real-time the data consumption**.
 
 In summary, consumer lag tells us 2 things:
-* The closer the lag to 0, the more confidnce we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are processing messages in a healthy manner.
-* The further the lag from 0, the less confidnce we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are not processing messages in a healthy manner.
+* The closer the lag to 0, the more confidence we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are processing messages in a healthy manner.
+* The further the lag from 0, the less confidence we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are not processing messages in a healthy manner.
 
 ### Supported Kafka Versions
 Since this client uses Kafka Admin Client and Kafka Consumer client version of *2+*, therefore this client supportes Kafka brokders from version **0.10.2+**.
@@ -27,10 +27,20 @@ Since this client uses Kafka Admin Client and Kafka Consumer client version of *
 ## Features
 * Rich metrics that show detailed consumer lags on both levels, on the **consumer group level** and on the **consumer member level** for more granularity.
 * Metrics are available for both, **console and Prometheus**. 
-* Ready to use thin Docker image for your cloud deployments such as **Kubernetes**.
-* The tool is also available as **maven package** in case you want to embedded it into your application.
+* **Very fast** due to the *native compilation* by GraalVM Native Image.
+* Highly configurable through either properties configurations or through environment variables.
+* Configurable logging through log4j, currently supports JSON as well the standard logging.
+* Ready to use thin Docker images either for *Jar* or *native* application for your cloud deployments such as **Kubernetes**.
+* The tool is also available as **maven package** in case you want to be embedded it into your application.
 
 ## Changelog
+#### 0.1.0
+**Major Release:**
+- Issue #27: Refactor the client in order to minimize the usage of dependencies and remove any reflections.
+- Issue #24: Support native compilation via GraalVM Native Image.
+- Issue #15: Configurable log4j support for either JSON or standard logging.
+- Issue #14: Support of configurations through environment variables.
+- Update all the dependencies to the latest version.
 #### 0.0.8: 
 - Issue #23: Extend Lag stats on consumer member level.
 - Issue #20: Support consumer group and topic deletion on the fly.
@@ -42,74 +52,75 @@ Since this client uses Kafka Admin Client and Kafka Consumer client version of *
 #### 0.0.6:
 - Issue #8: Support configuration file as parameter
 - Kafka client updated to version 2.4.1.
+
  
 ## Installation and Usage
-#### Uber JAR
-You can downland the latest release of the Uber JAR from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases). This client requires at least Java 8 in order to run. You can run it like this for example: 
+#### Native Application
+You can downland the latest release of the Native application from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases), currently it only supports **Mac** and **Linux**. An example from Prometheus component:
 ```
-java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "console" -i 5000
+./kafka-consumer-lag-monitoring-prometheus-0.1.0 config.properties
+``` 
+
+**Note to Mac users**: You will need to verify the application, to do this, run:
+```
+xattr -r -d com.apple.quarantine kafka-consumer-lag-monitoring-prometheus-0.1.0
+```
+
+#### Uber JAR
+You can downland the latest release of the Uber JAR from [here](https://github.com/omarsmak/kafka-consumer-lag-monitoring/releases). This client requires at least Java 8 in order to run. You can run it like this for example from Console component:  
+```
+java -jar kafka-consumer-lag-monitoring-console-0.1.0-all.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -p 5000
 ```
 
 #### Docker
-This client is available as well in [docker hub](https://hub.docker.com/r/omarsmak/kafka-consumer-lag-monitoring), the docker image is built on top of Java 11 JRE image and optimized to run in container orchestration frameworks
- such as kubernetes as efficient as possible. Assuming you want to run it locally and you have docker daemon installed, you can run it like this for example:
- ```
- docker run -p 9739:9739 --rm omarsmak/kafka-consumer-lag-monitoring:latest -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000 -p 9739
- ```
- **Note:** By default, port `9739` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9739`. However you can still change the corresponding docker mapped port to anything of your choice. 
+There two types of docker images:
+1. Docker images based on the **native application**: This docker image is built using the natively compiled application, the benefit is, you will get **faster** and **small** image which 
+is beneficial for your cloud native environment. However, since the native compilation is pretty new to this client, is still an evolving work.
+2. Docker images based on the **Uber Jar**: This docker image is built using the uber Jar. Although it might be slower and larger, it is the more stable than the Docker native images but is still optimized to run in container orchestration frameworks
+such as kubernetes as efficient as possible.
 
-#### Kubernetes
-Currently usage of environment variables are not directly supported. To support container orchestration, an entrypoint script is used. Provide required arguments as "args" in kubernetes deployments.
-
-You can use placeholders in the arg command and fill these settings by environment variables, secrets or configmaps.
-
+Example:
 ```
-args: ["-b", "$(BOOTSTRAP_SERVERS)","-m", "$(MODE)","-c", "$(CONSUMER_GROUPS)","-i", "$(POLL_INTERVAL)", "-p", "$(HTTP_PORT)"]
+docker run omarsmak/kafka-consumer-lag-monitoring-prometheus-native -p 9739:9739  \
+-e kafka_bootstrap_servers=localhost:9092 \
+-e kafka_retry_backoff.ms = 200 \
+-e monitoring_lag_consumer_groups="test*" \
+-e monitoring_lag_prometheus_http_port=9739 \
+-e monitoring_lag_logging_rootLogger_appenderRef_stdout_ref=LogToConsole \
+-e monitoring_lag_logging_rootLogger_level=info
 ```
 
 ## Usage
-    java -jar kafka-consumer-lag-monitoring.jar -h                                                                                                                                              
-        Usage: <main class> [-hV] [-b=<kafkaBootstrapServers>]
-                            -c=<kafkaConsumerClients> [-f=<kafkaPropertiesFile>]
-                            [-i=<pollInterval>] [-m=<clientMode>] [-p=<httpPort>]
-          -b, --bootstrap.servers=<kafkaBootstrapServers>
-                                    A list of host/port pairs to use for establishing
-                                      the initial connection to the Kafka cluster
-          -c, --consumer.groups=<kafkaConsumerClients>
-                                    A list of Kafka consumer groups or list ending with
-                                      star (*) to fetch all consumers with matching
-                                      pattern, e.g: 'test_v*'
-          -f, --kafka.properties.file=<kafkaPropertiesFile>
-                                    Optional. Properties file for Kafka AdminClient
-                                      configurations, this is the typical Kafka
-                                      properties file that can be used in the
-                                      AdminClient. For more info, please take a look at
-                                      Kafka AdminClient configurations documentation.
-          -h, --help                Show this help message and exit.
-          -i, --poll.interval=<pollInterval>
-                                    Interval delay in ms to that refreshes the client
-                                      lag metrics, default to 2000ms
-          -m, --mode=<clientMode>   Mode to run client, possible values 'console' or
-                                      'prometheus', default to 'console'
-          -p, -http.port=<httpPort> Http port that is used to expose metrics in case
-                                      prometheus mode is selected, default to 9739
-          -V, --version             Print version information and exit.
-          
-#### New in version 0.0.6: 
-Now the client has the ability to accept a properties file with the admin client/consumer configuration that you typically use with Kafka Clients. This option can be accessible through the flag `-f`. example:
+### Console Component:
+This mode will print the consumer lag per partition and the total lag among all partitions and continuously refreshing the metrics per the value of `--poll.interval` startup parameter. It accepts the following parameters:
+ ```
+./kafka-consumer-lag-monitoring-console-0.1.0 -h    
+                                                                                                                                                                                                   130 ↵ omaral-safi@Omars-MBP-2
+Usage: kafka-consumer-lag-monitoring-console [-hV] [-b=<kafkaBootstrapServers>]
+       [-c=<kafkaConsumerGroups>] [-f=<kafkaPropertiesFile>] [-p=<pollInterval>]
+Prints the kafka consumer lag to the console.
+  -b, --bootstrap.servers=<kafkaBootstrapServers>
+                  A list of host/port pairs to use for establishing the initial
+                    connection to the Kafka cluster
+  -c, --consumer.groups=<kafkaConsumerGroups>
+                  A list of Kafka consumer groups or list ending with star (*)
+                    to fetch all consumers with matching pattern, e.g: 'test_v*'
+  -f, --properties.file=<kafkaPropertiesFile>
+                  Optional. Properties file for Kafka AdminClient
+                    configurations, this is the typical Kafka properties file
+                    that can be used in the AdminClient. For more info, please
+                    take a look at Kafka AdminClient configurations
+                    documentation.
+  -h, --help      Show this help message and exit.
+  -p, --poll.interval=<pollInterval>
+                  Interval delay in ms to that refreshes the client lag
+                    metrics, default to 2000ms
+  -V, --version   Print version information and exit.
+```
 
-    java -jar kafka-consumer-lag-monitoring.jar -f my/path/file.properties -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000      
-    
-To learn more about the configuration that you can use here, please refer the following documentations:
-
-Kafka AdminClient configs: https://kafka.apache.org/documentation/#adminclientconfigs  
-
-Kafka Consumer configs: https://kafka.apache.org/documentation/#consumerconfigs
-
-### Console Mode
-This mode will print the consumer lag per partition and the total lag among all partitions and continuously refreshing the metrics per the value of `--poll.interval` startup parameter. Example output:  
-
-    java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "console" -i 5000
+An example output:
+```
+./kafka-consumer-lag-monitoring-console-0.1.0 -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -p 5000
         Consumer group: my_awesome_consumer_group_01
         ==============================================================================
         
@@ -142,15 +153,77 @@ This mode will print the consumer lag per partition and the total lag among all 
         Total topic offsets: 6342
         Total consumer offsets: 6335    
         Total lag: 7
-        
-       
-### Prometheus Mode       
-In this mode, the tool will start an http server on a port that being set in `--http.port` startup parameter and it will expose an endpoint that is reachable via `localhost:<http.port>/metrics` or `localhost:<http.port>/prometheus` 
-so prometheus server can scrap these metrics and expose them for example to grafana. 
+```
+ 
+##### Example Usage Native Application:
+```
+./kafka-consumer-lag-monitoring-console-0.1.0 -c "test*" -b localhost:9092 -p 500
+```
 
-    java -jar kafka-consumer-lag-monitoring.jar -b kafka1:9092,kafka2:9092,kafka3:9092 -c "my_awesome_consumer_group_01" -m "prometheus" -i 5000
+##### Example Usage Uber Jar Application:
+```
+java -jar kafka-consumer-lag-monitoring-console-0.1.0-all.jar -c "test*" -b localhost:9092 -p 500
+```
 
-It will expose the following metrics:
+##### Example Usage Docker Native Application:
+```
+docker run omarsmak/kafka-consumer-lag-monitoring-console-native -c "test*" -b localhost:9092 -p 500
+```
+
+##### Example Usage Docker Uber Jar Application:
+```
+docker run omarsmak/kafka-consumer-lag-monitoring-console -c "test*" -b localhost:9092 -p 500
+```
+
+### Prometheus Component:
+In this mode, the tool will start an http server on a port that being set in `monitoring.lag.prometheus.http.port` config and it will expose an endpoint that is reachable via `localhost:<http.port>/metrics` or `localhost:<http.port>/prometheus` 
+so prometheus server can scrap these metrics and expose them for example to grafana. You will need to pass the configuration as properties file or via environment variables. An example config file:
+```
+kafka.bootstrap.servers=localhost:9092
+kafka.retry.backoff.ms = 200
+monitoring.lag.consumer.groups=test*
+monitoring.lag.prometheus.http.port=9772
+monitoring.lag.logging.rootLogger.appenderRef.stdout.ref=LogToConsole
+monitoring.lag.logging.rootLogger.level=info
+```
+And then you can run it like the following:
+##### Example Usage Native Application:
+```
+./kafka-consumer-lag-monitoring-prometheus-0.1.0 config.proprties
+```
+
+##### Example Usage Uber Jar Application:
+```
+java -jar kafka-consumer-lag-monitoring-prometheus-0.1.0-all.jar config.proprties
+```
+
+##### Example Usage Docker Native Application:
+For Docker, we will use the environment variables instead:
+```
+docker run omarsmak/kafka-consumer-lag-monitoring-prometheus-native -p 9739:9739  \
+-e kafka_bootstrap_servers=localhost:9092 \
+-e kafka_retry_backoff.ms = 200 \
+-e monitoring_lag_consumer_groups="test*" \
+-e monitoring_lag_prometheus_http_port=9739 \
+-e monitoring_lag_logging_rootLogger_appenderRef_stdout_ref=LogToConsole \
+-e monitoring_lag_logging_rootLogger_level=info 
+```
+
+##### Example Usage Docker Uber Jar Application:
+For Docker, we will use the environment variables instead:
+```
+docker run omarsmak/kafka-consumer-lag-monitoring-prometheus -p 9739:9739  \
+-e kafka_bootstrap_servers=localhost:9092 \
+-e kafka_retry_backoff.ms = 200 \
+-e monitoring_lag_consumer_groups="test*" \
+-e monitoring_lag_prometheus_http_port=9739 \
+-e monitoring_lag_logging_rootLogger_appenderRef_stdout_ref=LogToConsole \
+-e monitoring_lag_logging_rootLogger_level=info
+```
+
+**Note:** By default, port `9739` is exposed by the docker image, hence you **should avoid** overrding the client's HTTP port through the client's startup arguments (`--http.port`) as described below when you run the client through docker container and leave it to the default of `9739`. However you can still change the corresponding docker mapped port to anything of your choice. 
+
+##### Exposed Metrics:
 ##### `kafka_consumer_group_offset{group, topic, partition}`
 The latest committed offset of a consumer group in a given partition of a topic.
 
@@ -168,6 +241,65 @@ The total lag of a consumer group member behind the head of a topic. This gives 
 
 ##### `kafka_consumer_group_member_partition_lag{group, member, topic, partition}`
 The lag of a consumer member within consumer group behind the head of a given partition of a topic.
+ 
+
+#### Configuration
+Majority of the components here, for example `Prometheus` components supports two types of configurations:
+1. **Application Properties File**: You can provide the application a config properties file as argument e.g: `./kafka-consumer-lag-monitoring-prometheus-0.1.0 config.properties`, this is an example config:
+
+        ```
+        kafka.bootstrap.servers=localhost:9092
+        kafka.retry.backoff.ms = 200
+        monitoring.lag.consumer.groups=test*
+        monitoring.lag.prometheus.http.port=9772
+        monitoring.lag.logging.rootLogger.appenderRef.stdout.ref=LogToConsole
+        monitoring.lag.logging.rootLogger.level=info
+        ```
+    Note here the application accepts configs with two prefixes:
+    - `kafka.`: Use the `kafka` prefix for any config related to Kafka admin client, these configs are basically the same configs that you will find here: https://kafka.apache.org/documentation/#adminclientconfigs/.
+    - `monitoring.lag.` : Use the `monitoring.lag` prefix to pass any config specific to this client, you will take a look which configs that the client will accept later.
+
+2. **Environment Variables**: You can as well pass the configs as environment variables, this is useful when running the application in environment like Docker, for example:
+
+        ```
+        docker run --rm -p 9739:9739 \
+        -e monitoring_lag_logging_rootLogger_appenderRef_stdout_ref=LogToConsole \
+        -e monitoring_lag_consumer_groups="test-*" \
+        -e kafka_bootstrap_servers=host.docker.internal:9092  \
+        omarsmak/kafka-consumer-lag-monitoring-prometheus-native:latest 
+        ```    
+     Similar to the application properties file, it supports `kafka` and `monitoring.lag`. However, you will need to replace all dot `.` with underscore `_` for all the configs, for example the config `kafka.bootstrap.servers` its environment equivalent is `kafka_bootstrap_servers`.
+     
+#### Available Configurations
+- `monitoring.lag.consumer.groups` : A list of Kafka consumer groups or list ending with star (\*\) to fetch all consumers with matching pattern, e.g: `test_v*`.
+- `monitoring.lag.poll.interval` : Interval delay in ms to that refreshes the client lag metrics, default to 2000ms.
+- `monitoring.lag.prometheus.http.port` : Http port that is used to expose metrics in case, default to 9739.
+
+
+#### Logging
+The client ships with Log4j bindings and supports JSON and standard logging. The default log4j properties that it uses:
+```
+# Log to console
+appender.console.type = Console
+appender.console.name = LogToConsole
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+
+# Log to console as JSON
+appender.json.type = Console
+appender.json.name = LogInJSON
+appender.json.layout.type = JsonLayout
+appender.json.layout.complete = true
+appender.json.layout.compact = false
+
+rootLogger.level = info
+rootLogger.appenderRef.stdout.ref = LogInJSON
+```
+By default, `LogInJSON` is enabled. However, you can customtize all of this by providing these configurations prefixed with `monitoring.lag.logging.`. For example, to enable the standard logging, you will need to 
+add this config `monitoring.lag.logging.rootLogger.appenderRef.stdout.ref=LogToConsole` or as environment variable: `monitoring_lag_logging_rootLogger_appenderRef_stdout_ref=LogToConsole`.
+
+**Note**: When configuring the logging through the environment variables, note that the configuration are **case sensitive**.
+                                                                                
 
 ## Usage as Library 
 If you want to use this client embedded into your application, you can achieve that by adding a [dependency](https://bintray.com/omarsmak/kafka/consumer-lag-monitoring) to this tool in your `pom.xml` or `gradle.build` as explained below:
@@ -186,7 +318,7 @@ and under `<dependencies>..</dependencies>`:
 <dependency>
   <groupId>com.omarsmak.kafka</groupId>
   <artifactId>consumer-lag-monitoring</artifactId>
-  <version>0.0.8</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
@@ -199,7 +331,7 @@ repositories {
 ```
 and under `dependencies` the following: 
 ```
-compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.0.8'
+compile 'com.omarsmak.kafka:consumer-lag-monitoring:0.1.0'
 
 ```
 **Note:** Since [bintray jcenter](https://bintray.com/bintray/jcenter) is shadowing all maven central packages, you don't need to include both.

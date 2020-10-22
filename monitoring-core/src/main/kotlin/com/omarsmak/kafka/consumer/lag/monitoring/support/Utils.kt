@@ -2,7 +2,6 @@ package com.omarsmak.kafka.consumer.lag.monitoring.support
 
 import com.omarsmak.kafka.consumer.lag.monitoring.client.KafkaConsumerLagClient
 import com.omarsmak.kafka.consumer.lag.monitoring.engine.MonitoringEngine
-import mu.KLogger
 import mu.KotlinLogging
 import org.apache.logging.log4j.core.config.Configurator
 import org.apache.logging.log4j.core.config.properties.PropertiesConfigurationBuilder

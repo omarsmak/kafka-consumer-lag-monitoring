@@ -24,7 +24,7 @@ subprojects {
     apply plugin: 'kotlin'
 
     group = "com.omarsmak.kafka.consumer.lag.monitoring"
-    version = '0.1.0'
+    version = '0.1.1-SNAPSHOT'
 
     ext {
         libraryName = "kafka-consumer-lag-monitoring"
