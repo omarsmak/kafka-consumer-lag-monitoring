@@ -5,7 +5,7 @@ jobs:
       language: java
       jdk:
         - openjdk11
-      script: ./gradlew clean test -PossrhUsername=test -PossrhPassword=test
+      script: ./gradlew clean test
 
     - stage: "Deploy Jar and Native Linux application and Docker"
       if: tag IS present
@@ -14,7 +14,7 @@ jobs:
       language: java
       jdk:
         - openjdk11
-      script: ./gradlew clean shadowJar buildNativeApplication -PossrhUsername=test -PossrhPassword=test
+      script: ./gradlew clean shadowJar buildNativeApplication
       deploy:
         - provider: releases
           api_key: $GITHUB_KEY
@@ -27,13 +27,13 @@ jobs:
             tags: true
 
         - provider: script
-          script: ./gradlew jib -PossrhUsername=test -PossrhPassword=test
+          script: ./gradlew jib
           skip_cleanup: true
           on:
             tags: true
 
         - provider: script
-          script: ./gradlew buildAndPushNativeApplicationDockerImage -PossrhUsername=test -PossrhPassword=test
+          script: ./gradlew buildAndPushNativeApplicationDockerImage
           skip_cleanup: true
           on:
             tags: true
@@ -46,7 +46,7 @@ jobs:
       language: java
       jdk:
         - openjdk11
-      script: ./gradlew clean buildNativeApplication -PossrhUsername=test -PossrhPassword=test
+      script: ./gradlew clean buildNativeApplication
       deploy:
         - provider: releases
           api_key: $GITHUB_KEY
