@@ -42,6 +42,10 @@ signing {
     sign configurations.archives
 }
 
+tasks.withType(Sign) {
+    onlyIf { gradle.taskGraph.hasTask("uploadArchives") }
+}
+
 
 dependencies {
     compile "org.apache.kafka:kafka-clients:$kafkaVersion"
