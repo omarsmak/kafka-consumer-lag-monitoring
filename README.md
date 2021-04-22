@@ -1,7 +1,7 @@
 Kafka Consumer Lag Monitoring - Lightweight and Cloud Native Ready
 ====
 [![Build Status](https://travis-ci.com/omarsmak/kafka-consumer-lag-monitoring.svg?token=ACVRSYGMw5EM3tmwPiBz&branch=master)](https://travis-ci.com/omarsmak/kafka-consumer-lag-monitoring)
- ![Download](https://maven-badges.herokuapp.com/maven-central/com.omarsmak.kafka/consumer-lag-monitoring/badge.png) 
+ ![Download](https://maven-badges.herokuapp.com/maven-central/com.omarsmak.kafka/consumer-lag-monitoring/badge.svg) 
 
 
 A client tool that exports the consumer lag of a Kafka consumer group to different implementations such as Prometheus or your terminal. It utlizes Kafka's AdminClient and Kafka's Consumer's client in order to fetch such 
