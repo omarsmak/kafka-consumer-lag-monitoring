@@ -24,7 +24,7 @@ subprojects {
     apply plugin: 'kotlin'
 
     group = "com.omarsmak.kafka.consumer.lag.monitoring"
-    version = '0.1.2-SNAPSHOT'
+    version = '0.1.1'
 
     ext {
         libraryName = "kafka-consumer-lag-monitoring"
@@ -139,7 +139,7 @@ configure(subprojects.findAll { it.name.contains("component") }) {
 
             // First stage: build our native image inside a docker image
 
-            from new Dockerfile.From("ghcr.io/graalvm/graalvm-ce:${graalNativeImageVersion}-java11").withStage("build")
+            from new Dockerfile.From("ghcr.io/graalvm/graalvm-ce:${graalNativeImageVersion}").withStage("build")
             workingDir "/app"
             copyFile componentFullName + "*all.jar", "/app/jar/application.jar"
             runCommand "gu install native-image"
