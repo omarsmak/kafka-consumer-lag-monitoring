@@ -22,7 +22,7 @@ In summary, consumer lag tells us 2 things:
 * The further the lag from 0, the less confidence we are on processing messages nearer to real-time. Therefore, it _could_ indicate that our consumers are not processing messages in a healthy manner.
 
 ### Supported Kafka Versions
-Since this client uses Kafka Admin Client and Kafka Consumer client version of *2+*, therefore this client supportes Kafka brokders from version **0.10.2+**.
+Since this client uses Kafka Admin Client and Kafka Consumer client version of *2+*, therefore this client supportes Kafka brokers from version **0.10.2+**.
 
 ## Features
 * Rich metrics that show detailed consumer lags on both levels, on the **consumer group level** and on the **consumer member level** for more granularity.
