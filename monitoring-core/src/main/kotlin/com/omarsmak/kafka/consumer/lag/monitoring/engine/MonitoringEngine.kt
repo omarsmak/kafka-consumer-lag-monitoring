@@ -44,8 +44,17 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         kafkaConfigs = Utils.getConfigsWithPrefixCaseInSensitive(configs, CONFIG_KAFKA_PREFIX)
         componentConfigs = initializeComponentDefaultConfigs().plus(Utils.getConfigsWithPrefixCaseInSensitive(configs, CONFIG_LAG_CLIENT_PREFIX))
 
+        var kafkaLoggableConfigs = kafkaConfigs.mapNotNull{ (key, value) ->
+          when (key) {
+              "ssl.truststore.password" -> key to "[hidden]"
+              "ssl.key.password" -> key to "[hidden]"
+              "sasl.jaas.config" -> key to value.toString().replace("password=\"(.*)\"".toRegex(), "password=\"[hidden]\"")
+              else -> key to value
+          }
+        }.toMap()
+
         logger.info("Component Configs: $componentConfigs")
-        logger.info("Kafka Configs: $kafkaConfigs")
+        logger.info("Kafka Configs: $kafkaLoggableConfigs")
 
         registerComponent(monitoringComponent)
     }
