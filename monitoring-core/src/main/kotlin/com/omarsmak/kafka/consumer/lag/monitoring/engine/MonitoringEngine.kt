@@ -48,6 +48,7 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
           when (key) {
               "ssl.truststore.password" -> key to "[hidden]"
               "ssl.key.password" -> key to "[hidden]"
+              "ssl.keystore.certificate.chain" -> key to "[hidden]"
               "sasl.jaas.config" -> key to value.toString().replace("password=\"(.*)\"".toRegex(), "password=\"[hidden]\"")
               else -> key to value
           }
