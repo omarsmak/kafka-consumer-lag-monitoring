@@ -184,12 +184,15 @@ so prometheus server can scrap these metrics and expose them for example to graf
 ```
 kafka.bootstrap.servers=localhost:9092
 kafka.retry.backoff.ms = 200
-monitoring.lag.consumer.groups=test*
+monitoring.lag.consumer.groups=group-a-*,*-b-*,*-c
+monitoring.lag.consumer.groups.exclude=*test*
 monitoring.lag.prometheus.http.port=9772
 monitoring.lag.logging.rootLogger.appenderRef.stdout.ref=LogToConsole
 monitoring.lag.logging.rootLogger.level=info
 ```
-And then you can run it like the following:
+This will include consumer groups that either start with `group-a-`, contain `-b-`, or end with `-c`, excluding those containing `test`.
+
+You can then run it like the following:
 ##### Example Usage Native Application:
 ```
 ./kafka-consumer-lag-monitoring-prometheus-0.1.0 config.proprties

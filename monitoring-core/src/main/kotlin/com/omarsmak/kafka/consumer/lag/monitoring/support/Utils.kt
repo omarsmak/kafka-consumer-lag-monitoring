@@ -13,7 +13,7 @@ object Utils {
     const val DEFAULT_LOGGING_FILE = "config/log4j2.template"
     const val DEFAULT_LOGGING_PREFIX = "${MonitoringEngine.CONFIG_LAG_CLIENT_PREFIX}.logging"
 
-    fun getTargetConsumerGroups(client: KafkaConsumerLagClient, configConsumerGroups: List<String>): Set<String> {
+    fun getTargetConsumerGroups(client: KafkaConsumerLagClient, configConsumerGroups: List<String>, configExcludedConsumerGroups: List<String>): Set<String> {
         // Get consumer groups from the kafka broker
         val consumerGroups = client.getConsumerGroupsList()
 
@@ -21,13 +21,44 @@ object Utils {
         val matchedConsumersGroups = configConsumerGroups
                 .filter { it.contains("*") }
                 .map { x ->
-                    consumerGroups.filter { it.startsWith(x.replace("*", "")) }
+                    consumerGroups.filter {
+                      if (x.startsWith("*") && x.endsWith("*"))
+                        it.contains(x.replace("*", ""))
+                      else if (x.endsWith("*"))
+                        it.startsWith(x.replace("*", ""))
+                      else if (x.startsWith("*"))
+                        it.endsWith(x.replace("*", ""))
+                      else
+                        false
+                    }
                 }
                 .flatten()
+                .union(
+                  configConsumerGroups
+                          .filterNot { it.contains("*") }
+                )
 
-        return configConsumerGroups
-                .filterNot { it.contains("*") }
-                .union(matchedConsumersGroups)
+        val exludedConsumersGroups = configExcludedConsumerGroups
+                .filter { it.contains("*") }
+                .map { x ->
+                    consumerGroups.filter {
+                      if (x.startsWith("*") && x.endsWith("*"))
+                        it.contains(x.replace("*", ""))
+                      else if (x.endsWith("*"))
+                        it.startsWith(x.replace("*", ""))
+                      else if (x.startsWith("*"))
+                        it.endsWith(x.replace("*", ""))
+                      else
+                        false
+                    }
+                }
+                .flatten()
+                .union(
+                  configExcludedConsumerGroups
+                          .filterNot { it.contains("*") }
+                )
+
+        return matchedConsumersGroups.minus(exludedConsumersGroups)
     }
 
     fun loadPropertiesFile(filePath: String): Properties {
