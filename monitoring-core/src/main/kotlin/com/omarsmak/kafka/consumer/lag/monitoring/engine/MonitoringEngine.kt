@@ -27,6 +27,7 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         const val DEFAULT_POLL_INTERVAL = 2000
 
         const val CONSUMER_GROUPS = "consumer.groups"
+        const val EXCLUDED_CONSUMER_GROUPS = "consumer.groups.exclude"
 
         fun createWithComponentAndConfigs(monitoringComponent: MonitoringComponent, configs: Map<String, Any?>): MonitoringEngine =
                 MonitoringEngine(monitoringComponent, configs)
@@ -79,7 +80,7 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         timer.scheduleAtFixedRate(0, monitoringPollInterval) {
             try {
                 // get our full target consumer groups, however we do have to check here to make sure we catch any new consumer group
-                val consumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initializeConsumerGroups())
+                val consumerGroups = Utils.getTargetConsumerGroups(kafkaConsumerLagClient, initializeConsumerGroups(), initializeExcludedConsumerGroups())
                 val diffConsumerGroups = Utils.updateAndTrackConsumerGroups(trackedConsumerGroups, consumerGroups, false)
                 trackedConsumerGroups = diffConsumerGroups.updatedConsumerGroups
 
@@ -173,6 +174,16 @@ class MonitoringEngine private constructor(monitoringComponent: MonitoringCompon
         }
 
         return consumerGroups.split(",")
+    }
+
+    private fun initializeExcludedConsumerGroups(): List<String> {
+        val excludedConsumerGroups = componentConfigs[EXCLUDED_CONSUMER_GROUPS] as String?
+
+        if (excludedConsumerGroups.isNullOrEmpty()) {
+            return listOf<String>();
+        }
+
+        return excludedConsumerGroups.split(",")
     }
 
 
